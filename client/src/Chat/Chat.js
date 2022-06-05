@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Paper from '@mui/material/Paper';
 import { MessageLeft } from "./Messages";
 import "./Chat.css"
@@ -6,11 +6,18 @@ import "./Chat.css"
 
 export default function Chats(props) {
   console.log(props)
+  const scrollRef = useRef(null);
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behaviour: "smooth" });
+    }
+  }, [props]);
   return (
-    <div className="container">
-      <Paper className="paper" zDepth={2}>
+      <Paper className="paper" >
         <Paper id="style-1" className={"messagesBody"}>
-          {props.messages !== undefined ? 
+          {/* <div onClick={()=>{console.log(props.messages)}}>d</div> */}
+          {props.messages ? 
             props.messages.map(message => {
               return(<MessageLeft
             message={message}
@@ -18,8 +25,8 @@ export default function Chats(props) {
             }):
             <></>
           }
+          <div ref={scrollRef} />
         </Paper>
       </Paper>
-    </div>
   );
 }

@@ -2,21 +2,29 @@
 from distutils.log import error
 from telethon import TelegramClient, events, sync
 from flask import Flask,  request
-from flask_sock import Sock
 from multiprocessing import Process
 import requests
 import json
 from flask_cors import CORS, cross_origin
+from flask_socketio import SocketIO
 
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-sock = Sock(app)
+
 telegramArr = []
 
 # Messages API Route
+
+
+# @socketio.on('message', namespace="/")
+# @cross_origin()
+# def handle_message():
+#     send("message")
 
 
 @app.route("/")
@@ -28,13 +36,9 @@ def members():
 @app.route("/", methods=['POST'])
 @cross_origin()
 def add_message():
+    socketio.emit("message", request.get_data().decode("utf-8"))
     telegramArr.append(request.get_data().decode("utf-8"))
     return "New message", 204
-
-
-@sock.route("/")
-def send():
-    return "hi"
 
 
 def b():
@@ -50,9 +54,9 @@ def b():
     async def newMessage(event):
         newMessage = event.message.message
         try:
-            print(telegramArr)
             requests.post("http://127.0.0.1:5000/", newMessage)
         except:
+            print("here")
             print(error)
         print(newMessage)
 
@@ -64,5 +68,6 @@ if __name__ == "__main__":
     # Process(target=b).start()
     p = Process(target=b)
     p.start()
-    app.run(debug=True, use_reloader=False)
+    # app.run(debug=True, use_reloader=False)
+    socketio.run(app)
     p.join()

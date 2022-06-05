@@ -10,13 +10,14 @@ justify-content : flex-end
 position: relative;
 margin-left: 20px;
 margin-bottom: 10px;
-padding: 10px;
-background-color: #A8DDFD;
-width: 60%;
+padding: 7px;
+background-color: #ead0ee;
+/* width: 60%; */
 text-align: left;
-font: 400 .9em 'Open Sans' sans-serif;
-border: 1px solid #97C6E3;
-border-radius: 10px;
+font: 400 .9em "'Open Sans' sans-serif";
+font-family: system-ui;
+border: 0.5px solid #d9dddf;
+border-radius: 3px;
 /* &:after: {
     content: '';
     position: absolute;

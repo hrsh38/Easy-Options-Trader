@@ -1,12 +1,13 @@
 .paper {
-    width: 80vw;
+    /* width: 80vw;
     height: 40vh;
     max-width: 250px;
-    max-width: 350px;
+    max-width: 350px; */
+    height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
-    position: relative
+    /* position: relative */
   };
   .container {
 
