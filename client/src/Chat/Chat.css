@@ -1,0 +1,23 @@
+.paper {
+    width: 80vw;
+    height: 40vh;
+    max-width: 250px;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative
+  };
+  .container {
+
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+  .messagesBody {
+    width: calc( 100%  );
+    margin: 10;
+    overflow-Y: scroll;
+    height: calc( 100%  )
+  }
+
