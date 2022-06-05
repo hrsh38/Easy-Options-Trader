@@ -7,6 +7,7 @@ import requests
 import json
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO
+import re
 
 
 app = Flask(__name__)
@@ -53,12 +54,15 @@ def b():
     @client.on(events.NewMessage())
     async def newMessage(event):
         newMessage = event.message.message
+        newMessage = re.sub(u"(\u2018|\u2019)", "'", newMessage)
+
+        print(newMessage)
         try:
             requests.post("http://127.0.0.1:5000/", newMessage)
         except:
             print("here")
             print(error)
-        print(newMessage)
+        # print(newMessage)
 
     with client:
         client.run_until_disconnected()
