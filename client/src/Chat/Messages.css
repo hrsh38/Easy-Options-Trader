@@ -1,24 +1,23 @@
 .messageRow {
-    display: flex
+  display: flex;
 }
 
 .messageRowRight {
-display: flex;
-justify-content : flex-end
+  display: flex;
+  justify-content: flex-end;
 }
 .messageBlue {
-position: relative;
-margin-left: 20px;
-margin-bottom: 10px;
-padding: 7px;
-background-color: #ead0ee;
-/* width: 60%; */
-text-align: left;
-font: 400 .9em "'Open Sans' sans-serif";
-font-family: system-ui;
-border: 0.5px solid #d9dddf;
-border-radius: 3px;
-/* &:after: {
+  position: relative;
+  margin: 10px 10px 0px 10px;
+  padding: 7px;
+  background-color: #ead0ee;
+  /* width: 60%; */
+  text-align: left;
+  font: 400 0.9em "'Open Sans' sans-serif";
+  font-family: system-ui;
+  border: 0.5px solid #d9dddf;
+  border-radius: 3px;
+  /* &:after: {
     content: '';
     position: absolute;
     width: 0;
@@ -42,16 +41,15 @@ border-radius: 3px;
 } */
 }
 
-
 .messageContent {
-padding: 0;
-margin: 0
-};
+  padding: 0;
+  margin: 0;
+}
 .messageTimeStampRight {
-position: absolute;
-font-size: .85em;
-font-Weight: 300;
-margin-Top: 10px;
-bottom: -3px;
-right: 5px
+  position: absolute;
+  font-size: 0.85em;
+  font-weight: 300;
+  margin-top: 10px;
+  bottom: -3px;
+  right: 5px;
 }

@@ -13,16 +13,18 @@ export const MessageLeft = (props) => {
           {/* <div className={classes.displayName}>{displayName}</div> */}
           <div className="messageBlue">
             <div>
-              <Linkify
-                className="messageContent"
-                componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a target="blank" href={decoratedHref} key={key}>
-                    {decoratedText}
-                  </a>
-                )}
-              >
-                {message}
-              </Linkify>
+              <p className="messageContent">
+                <Linkify
+                  className="messageContent"
+                  componentDecorator={(decoratedHref, decoratedText, key) => (
+                    <a target="blank" href={decoratedHref} key={key}>
+                      {decoratedText}
+                    </a>
+                  )}
+                >
+                  {message}
+                </Linkify>
+              </p>
             </div>
             {/* <div className={classes.messageTimeStampRight}>{timestamp}</div> */}
           </div>

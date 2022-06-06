@@ -92,12 +92,7 @@ const App = () => {
         <TDA />
       </div>
       <div id="sw" className="test">
-        <TradingViewWidget
-          symbol={ticker}
-          theme={"Dark"}
-          locale="fr"
-          autosize
-        />
+        <TradingViewWidget symbol={ticker} theme={"Dark"} autosize />
       </div>
       <div id="se" className="test">
         test
