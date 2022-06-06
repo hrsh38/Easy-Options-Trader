@@ -2,3 +2,4 @@ telethon
 flask
 flask_cors
 flask_socketio
+requests
