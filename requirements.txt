@@ -3,3 +3,5 @@ flask
 flask_cors
 flask_socketio
 requests
+tda-api
+selenium
