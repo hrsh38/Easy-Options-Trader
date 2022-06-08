@@ -41,11 +41,15 @@ telegramArr = []
 # Messages API Route
 
 
-@socketio.on('message', namespace="/")
+@socketio.on('message')
 @cross_origin()
 def handle_message():
     print("message")
 
+@socketio.on('join', namespace="/")
+@cross_origin()
+def handle_join():
+    return ""
 
 @app.route("/")
 @cross_origin()
@@ -56,7 +60,7 @@ def members():
 @app.route("/", methods=['POST'])
 @cross_origin()
 def add_message():
-    connect.getOptionPrice("300","6/17", "AAPL", "c")
+    # connect.getOptionPrice("300","6/17", "AAPL", "c")
     socketio.emit("message", request.get_data().decode("utf-8"))
     telegramArr.append(request.get_data().decode("utf-8"))
     return "New message", 204
@@ -67,7 +71,7 @@ def b():
 
     api_hash = "9a2309a0a34b0c8d9eee2ce409e4a30a"
 
-    user_input_channel = "https://t.me/testingtestertest"
+    # user_input_channel = "https://t.me/testingtestertest"
 
     client = TelegramClient('Test', api_id, api_hash).start()
 

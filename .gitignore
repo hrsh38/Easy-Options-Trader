@@ -2,3 +2,5 @@ venv
 *.session
 client/node_modules
 *.pyc
+Test.session-journal
+
