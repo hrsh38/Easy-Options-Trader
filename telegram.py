@@ -1,5 +1,6 @@
 
 from distutils.log import error
+from io import BytesIO
 from telethon import TelegramClient, events, sync
 from flask import Flask,  request
 from multiprocessing import Process
@@ -9,6 +10,7 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO
 import re
 import connect
+from PIL import Image
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -51,6 +53,57 @@ def handle_message():
 def handle_join():
     return ""
 
+@socketio.on('options', namespace="/")
+@cross_origin()
+def getOptionsPrice(symbol,date, type, strike):
+    print(symbol,date, type, strike)
+    ret = connect.getOptionPrice(symbol, date, type, strike)
+    socketio.emit("liveOptions", ret)
+    return ""
+
+@socketio.on('place_options_order', namespace="/")
+@cross_origin()
+def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
+    # print(symbol,date, type, strike)
+    ret = connect.placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price)
+    socketio.emit("orderStatus", ret)
+    return ""
+
+@socketio.on('sellPosition', namespace="/")
+@cross_origin()
+def sellToClosePosition(symbol, quantity, ask_price):
+    ret = connect.sellToClosePosition(symbol, quantity, ask_price)
+    socketio.emit("sellPositionStatus", ret)
+    return ""
+
+@socketio.on('getOrders', namespace="/")
+@cross_origin()
+def getOrders():
+    ret = connect.getOrders()
+    socketio.emit("allOrders", ret)
+    return ""
+
+@socketio.on('cancelOrders', namespace="/")
+@cross_origin()
+def cancelOrders(id):
+    ret = connect.cancelOrders(id)
+    socketio.emit("cancelOrderStatus", ret)
+    return ""
+
+@socketio.on('cancelAllOrders', namespace="/")
+@cross_origin()
+def cancelAllOrders():
+    ret = connect.cancelAllOrders()
+    socketio.emit("cancelAllOrdersStatus", ret)
+    return ""
+
+@socketio.on('getPositions', namespace="/")
+@cross_origin()
+def getPositions():
+    ret = connect.getPositions()
+    socketio.emit("positions", ret)
+    return ""
+
 @app.route("/")
 @cross_origin()
 def members():
@@ -77,6 +130,19 @@ def b():
 
     @client.on(events.NewMessage())
     async def newMessage(event):
+        if event.photo:
+            print(event.photo)
+
+            photo_1 = Image.open(event.message.media.photo)
+            print(photo_1)
+            # image_buf = BytesIO()
+            # photo_1.save(image_buf, format="JPEG")
+            # image = image_buf.getvalue()
+            try:
+                requests.post("http://127.0.0.1:5000/", event.photo)
+            except:
+                print("image error")
+                print(error)
         newMessage = event.message.message
         newMessage = re.sub(u"(\u2018|\u2019)", "'", newMessage)
         newMessage = emoji_pattern.sub(r'', newMessage)

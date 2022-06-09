@@ -5,3 +5,4 @@ flask_socketio
 requests
 tda-api
 selenium
+nested-lookup

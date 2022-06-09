@@ -11,14 +11,45 @@ const Apps = () => {
   const [firstSwitch, setFirstSwitch] = useState(false)
   const [post, setPost] = useState([])
   const [message, setMessage] = useState("")
-  const [ticker, setTicker] = useState("AAPL")
+  const [liveOptionsPrice, setLiveOptionsPrice] = useState("")
+
+  const [symbol, setSymbol] = React.useState("AAPL")
+  const [date, setDate] = React.useState("")
+  const [type, setType] = React.useState("")
+  const [strike, setStrike] = React.useState("")
 
   let messageParse = (message) => {
+    message = message.toUpperCase()
     try {
       setMessage(message)
       const regex = /[$][A-Za-z][\S]*/gm
       let m = regex.exec(message)
-      if (m) setTicker(m[0].substring(1).toUpperCase())
+      if (m) {
+        // setTicker(m[0].substring(1).toUpperCase())
+        setSymbol(m[0].substring(1).toUpperCase())
+      }
+      let arr = message.split(" ")
+      arr.forEach((item) => {
+        if (item.indexOf("$") !== -1) {
+          if (item.indexOf("C") !== -1) {
+            setType("C")
+            setStrike(item.substring(1).slice(0, -1))
+          } else {
+            if (item.indexOf("P") !== -1) {
+              setType("P")
+              setStrike(item.substring(1).slice(0, -1))
+            }
+            setStrike(item.substring(1))
+          }
+        } else if (item.indexOf("C") !== -1) {
+          setType("C")
+        } else if (item.indexOf("P") !== -1) {
+          setType("P")
+        } else if (item.indexOf("/") !== -1) {
+          setDate(item)
+        }
+      })
+
       console.log(m[0])
     } catch (error) {
       console.log("no ticker found")
@@ -28,8 +59,9 @@ const Apps = () => {
 
   const socket = useContext(SocketContext)
 
-  const handleClick = useCallback(() => {
-    socket.emit("join")
+  const handleClick = useCallback((symbol, date, type, strike) => {
+    //options: (symbol,date, type, strike)
+    socket.emit("options", symbol, date, type, strike)
   }, [])
 
   useEffect(() => {
@@ -38,6 +70,8 @@ const Apps = () => {
         .get(SOCKET_URL)
         .then((res) => {
           setPost(res.data)
+          console.log(res.data)
+          messageParse(res.data.messages[res.data.messages.length - 1])
         })
         .catch((err) => {
           console.log(err)
@@ -55,11 +89,9 @@ const Apps = () => {
         .catch((err) => {
           console.log(err)
         })
-      console.log(post)
+      // console.log(post)
     }
-
     socket.on("message", messageListener)
-
     return () => {
       socket.off("message", messageListener)
     }
@@ -71,11 +103,21 @@ const Apps = () => {
         <Chats messages={post.messages} />
       </div>
       <div id="ne" className="test">
-        <InteractiveBroker ticker={ticker} />
-        <button onClick={handleClick}>Join</button>
+        <InteractiveBroker
+          socket={socket}
+          symbol={symbol}
+          date={date}
+          type={type}
+          strike={strike}
+          setSymbol={setSymbol}
+          setDate={setDate}
+          setType={setType}
+          setStrike={setStrike}
+        />
+        {/* <button onClick={handleClick}>Join</button> */}
       </div>
       <div id="sw" className="test">
-        <TradingViewWidget symbol={ticker} theme="Dark" autosize />
+        <TradingViewWidget symbol={symbol} theme="Dark" autosize />
       </div>
       <div id="se" className="test">
         test
