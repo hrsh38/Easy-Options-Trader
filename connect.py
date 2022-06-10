@@ -66,21 +66,24 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
                   .set_duration(Duration.GOOD_TILL_CANCEL)
                   .set_session(Session.NORMAL)
                   .build())
-    print(order)
+    # print(order)
+    return order
     # print(h)
 # symbol, date_month, date_day, type, strike, quantity, ask_price
 # placeOptionsOrder("BBBY", "6", "17", "C", "12", 1, 0.04)
 
 def getOrders():
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
-    h = c.get_orders_by_query(max_results=4).json()
-    print(h)
+    orders = c.get_orders_by_query(max_results=4).json()
+    # print(h)
+    return orders
 # getOrders()
 
 
 def cancelOrders(id):
     res = c.cancel_order(id, config.account_id)
     print(res)
+    return res
 
 # cancelOrders("8710515642")
 
@@ -88,23 +91,28 @@ def cancelAllOrders():
     orders = c.get_orders_by_query(status=Client.Order.Status.WORKING).json()
     try:
         response = nested_lookup('orderId', orders)
+        res = []
         for order_id in response:
-            res = c.cancel_order(order_id, config.account_id)
-            print(res)
+            res.append(c.cancel_order(order_id, config.account_id))
+            # print(res)
+        return res
     except:
         print('No orders found')
+        return ['No orders found']
 
 # cancelAllOrders()
 
 def getPositions():
     positions = json.dumps(c.get_accounts(fields=[Client.Account.Fields.POSITIONS]).json(), indent=4, sort_keys=True)
     print(positions)
+    return positions
 
 # getPositions()
 
 def sellToClosePosition(symbol, quantity, askPrice):
     close = c.place_order(config.account_id, option_sell_to_close_limit(symbol,quantity,askPrice ))
     print(close)
+    return close
 
 # sellToClosePosition('BBBY_061722C12', 1, '0.05')
 
