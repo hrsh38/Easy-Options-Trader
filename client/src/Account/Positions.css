@@ -1,0 +1,10 @@
+.list_items {
+  background-color: aliceblue;
+}
+
+.dialog-content {
+  display: flex;
+  margin: 10px;
+}
+.dialog-form {
+}

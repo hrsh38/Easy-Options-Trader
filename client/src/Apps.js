@@ -6,6 +6,7 @@ import Chats from "./Chat/Chat"
 import io from "socket.io-client"
 import TradingViewWidget from "react-tradingview-widget"
 import { InteractiveBroker } from "./Trading-Interface/InteractiveBroker"
+import { Account } from "./Account/Account"
 
 const Apps = () => {
   const [firstSwitch, setFirstSwitch] = useState(false)
@@ -61,7 +62,7 @@ const Apps = () => {
 
   const handleClick = useCallback((symbol, date, type, strike) => {
     //options: (symbol,date, type, strike)
-    socket.emit("options", symbol, date, type, strike)
+    // socket.emit("options", symbol, date, type, strike)
   }, [])
 
   useEffect(() => {
@@ -101,7 +102,7 @@ const Apps = () => {
   return (
     <>
       <div id="nw" className="test">
-        <Chats messages={post.messages} />
+        <Chats messages={post.messages} messageParse={messageParse} />
       </div>
       <div id="ne" className="test">
         <InteractiveBroker
@@ -121,7 +122,7 @@ const Apps = () => {
         <TradingViewWidget symbol={symbol} theme="Dark" autosize />
       </div>
       <div id="se" className="test">
-        test
+        <Account socket={socket} />
       </div>
     </>
   )

@@ -4,6 +4,7 @@ import { MessageLeft } from "./Messages"
 import "./Chat.css"
 
 export default function Chats(props) {
+  const { messageParse } = props
   console.log(props)
   const scrollRef = useRef(null)
   const [list, setList] = useState([])
@@ -18,7 +19,13 @@ export default function Chats(props) {
         {/* <div onClick={()=>{console.log(props.messages)}}>d</div> */}
         {props.messages ? (
           props.messages.map((message, index) => {
-            return <MessageLeft key={index} message={message} />
+            return (
+              <MessageLeft
+                key={index}
+                message={message}
+                messageParse={messageParse}
+              />
+            )
           })
         ) : (
           <></>

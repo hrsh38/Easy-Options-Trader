@@ -10,7 +10,6 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO
 import re
 import connect
-from PIL import Image
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -57,6 +56,7 @@ def handle_join():
 @cross_origin()
 def getOptionsPrice(symbol,date, type, strike):
     print(symbol,date, type, strike)
+    
     ret = connect.getOptionPrice(symbol, date, type, strike)
     socketio.emit("liveOptions", ret)
     return ""
@@ -66,14 +66,23 @@ def getOptionsPrice(symbol,date, type, strike):
 def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
     # print(symbol,date, type, strike)
     ret = connect.placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price)
-    socketio.emit("orderStatus", ret)
+    print(str(ret))
+    socketio.emit("orderStatus", str(ret))
     return ""
 
 @socketio.on('sellPosition', namespace="/")
 @cross_origin()
 def sellToClosePosition(symbol, quantity, ask_price):
+    print(symbol, quantity, ask_price)
     ret = connect.sellToClosePosition(symbol, quantity, ask_price)
-    socketio.emit("sellPositionStatus", ret)
+    socketio.emit("sellPositionStatus", str(ret))
+    return ""
+
+@socketio.on('getPositions', namespace="/")
+@cross_origin()
+def getPositions():
+    ret = connect.getPositions()
+    socketio.emit("positions", ret)
     return ""
 
 @socketio.on('getOrders', namespace="/")
@@ -86,8 +95,10 @@ def getOrders():
 @socketio.on('cancelOrders', namespace="/")
 @cross_origin()
 def cancelOrders(id):
-    ret = connect.cancelOrders(id)
-    socketio.emit("cancelOrderStatus", ret)
+    print(id)
+    ret = connect.cancelOrders(str(id))
+    print(ret)
+    socketio.emit("cancelOrderStatus", str(ret))
     return ""
 
 @socketio.on('cancelAllOrders', namespace="/")
@@ -97,12 +108,7 @@ def cancelAllOrders():
     socketio.emit("cancelAllOrdersStatus", ret)
     return ""
 
-@socketio.on('getPositions', namespace="/")
-@cross_origin()
-def getPositions():
-    ret = connect.getPositions()
-    socketio.emit("positions", ret)
-    return ""
+
 
 @app.route("/")
 @cross_origin()

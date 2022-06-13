@@ -34,17 +34,18 @@ except FileNotFoundError:
 
 
 def getOptionPrice(symbol,date, type, strike):
-    print(symbol,date, type, strike)
-    callPut = c.Options.ContractType.CALL if type.upper() == "C" else c.Options.ContractType.PUT
-
-
-
-    start_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date();
-    end_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date();
-
-
-    res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=end_date).json()
+    # print(symbol,date, type, strike)
     try:
+        callPut = c.Options.ContractType.CALL if type.upper() == "C" else c.Options.ContractType.PUT
+
+
+
+        start_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date();
+        end_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date() + datetime.timedelta(1);
+
+
+        res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=end_date).json()
+        # print(res)
         response = nested_lookup('mark', res)
         return response[0]
 
@@ -53,7 +54,7 @@ def getOptionPrice(symbol,date, type, strike):
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
 
-# getOptionPrice("AMZN", "6/17", "C", "130")
+# print(getOptionPrice("SPX", "?6/13", "P", "3800"))
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
 
@@ -62,27 +63,27 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
     print(newSymbol)
     # h = c.get_option_chain(newSymbol).json()
     order = c.place_order(config.account_id,
-                  option_buy_to_open_limit(newSymbol, quantity, ask_price)
+                  option_buy_to_open_limit(newSymbol, int(quantity), float(ask_price))
                   .set_duration(Duration.GOOD_TILL_CANCEL)
                   .set_session(Session.NORMAL)
                   .build())
-    # print(order)
+    print(order)
     return order
     # print(h)
 # symbol, date_month, date_day, type, strike, quantity, ask_price
-# placeOptionsOrder("BBBY", "6", "17", "C", "12", 1, 0.04)
+# placeOptionsOrder("SPXW", "6", "13", "P", "3800", "1", "0.01")
 
 def getOrders():
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
-    orders = c.get_orders_by_query(max_results=4).json()
-    # print(h)
+    orders = c.get_orders_by_query(max_results=5).json()
+    # print(orders)
     return orders
 # getOrders()
 
 
 def cancelOrders(id):
     res = c.cancel_order(id, config.account_id)
-    print(res)
+    # print(res)
     return res
 
 # cancelOrders("8710515642")
@@ -104,7 +105,7 @@ def cancelAllOrders():
 
 def getPositions():
     positions = json.dumps(c.get_accounts(fields=[Client.Account.Fields.POSITIONS]).json(), indent=4, sort_keys=True)
-    print(positions)
+    # print(positions)
     return positions
 
 # getPositions()
