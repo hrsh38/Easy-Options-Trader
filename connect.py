@@ -111,9 +111,15 @@ def getPositions():
 # getPositions()
 
 def sellToClosePosition(symbol, quantity, askPrice):
-    close = c.place_order(config.account_id, option_sell_to_close_limit(symbol,quantity,askPrice ))
+    close = c.place_order(config.account_id, option_sell_to_close_limit(symbol,int(quantity),float(askPrice) ))
     print(close)
     return close
 
 # sellToClosePosition('BBBY_061722C12', 1, '0.05')
 
+def getAccountInfo():
+    accountInfo = c.get_accounts().json()
+    # print(accountInfo)
+    return accountInfo
+
+# getAccountInfo()

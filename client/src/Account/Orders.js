@@ -21,7 +21,7 @@ export const Orders = (props) => {
     {
       field: "price",
       headerName: "Price",
-      width: 30,
+      width: 80,
       // editable: true,
     },
     {
@@ -121,10 +121,14 @@ export const Orders = (props) => {
       socket.emit("getOrders")
       setFirstTime(false)
     }
-
+    const interval = setInterval(() => {
+      socket.emit("getOrders")
+      socket.emit("getPositions")
+    }, 5000)
     return () => {
       socket.off("cancelOrderStatus", handleOrderUpdate)
       socket.off("allOrders", getOrders)
+      clearInterval(interval)
     }
   }, [socket])
 
@@ -143,6 +147,11 @@ export const Orders = (props) => {
               autoPageSize={true}
               autoHeight
               hideFooter
+              sx={{
+                bgcolor: "black",
+                height: "-webkit-fill-available",
+                color: "white",
+              }}
             />
           </div>
         </>

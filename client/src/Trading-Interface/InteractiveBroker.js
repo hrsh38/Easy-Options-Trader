@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react"
 import "./InteractiveBroker.css"
 import { OptionsPrice } from "./OptionsPrice"
+import TextField from "@mui/material/TextField"
 
 export const InteractiveBroker = (props) => {
   const {
@@ -71,10 +72,10 @@ export const InteractiveBroker = (props) => {
     socket.on("liveOptions", messageListener)
     socket.on("orderStatus", orderStatusUpdate)
 
-    if (firstTime) {
-      socket.emit("options", symbol, date, type, strike)
-      setOrderStatus("")
-    }
+    // if (firstTime) {
+    //   socket.emit("options", symbol, date, type, strike)
+    //   setOrderStatus("")
+    // }
     return () => {
       socket.off("liveOptions", messageListener)
       socket.off("orderStatus", orderStatusUpdate)
@@ -82,10 +83,10 @@ export const InteractiveBroker = (props) => {
   }, [socket])
 
   return (
-    <div style={{ color: "white" }}>
+    <div style={{ color: "white", padding: "15px" }}>
       <form onSubmit={handleClick}>
         <label>
-          Symbol:
+          {"Symbol: "}
           <input
             type="text"
             name="symbol"
@@ -163,6 +164,13 @@ export const InteractiveBroker = (props) => {
               }}
             />
           </label>
+          <div>
+            Cost:{" "}
+            {(parseFloat(askPrice) * quantity * 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </div>
           <button
             onClick={handleSendOrder}
             style={{ color: "white", background: "green" }}

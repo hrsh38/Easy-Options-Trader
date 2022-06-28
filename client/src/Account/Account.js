@@ -10,6 +10,7 @@ import Box from "@mui/material/Box"
 import { Positions } from "./Positions"
 import { Orders } from "./Orders"
 import { AccountInfo } from "./AccountInfo"
+import "./Account.css"
 
 const axios = require("axios").default
 
@@ -49,7 +50,17 @@ function a11yProps(index) {
 }
 
 export const Account = (props) => {
-  const { socket } = props
+  const {
+    socket,
+    symbol,
+    date,
+    type,
+    strike,
+    setSymbol,
+    setDate,
+    setType,
+    setStrike,
+  } = props
   const theme = useTheme()
   const [value, setValue] = React.useState(0)
   const [firstTime, setFirstTime] = React.useState(true)
@@ -73,11 +84,17 @@ export const Account = (props) => {
   }, [])
 
   return (
-    <Box sx={{ bgcolor: "background.paper", height: "-webkit-fill-available" }}>
+    <Box
+      sx={{
+        bgcolor: "black",
+        height: "-webkit-fill-available",
+        color: "white",
+      }}
+    >
       <AppBar position="static">
         <Tabs
           value={value}
-          sx={{ bgcolor: "#7a7a7a" }}
+          sx={{ bgcolor: "#393939" }}
           onChange={handleChange}
           indicatorColor="primary"
           textColor="inherit"
@@ -98,7 +115,17 @@ export const Account = (props) => {
           <AccountInfo socket={socket} />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          <Positions socket={socket} />
+          <Positions
+            socket={socket}
+            symbol={symbol}
+            date={date}
+            type={type}
+            strike={strike}
+            setSymbol={setSymbol}
+            setDate={setDate}
+            setType={setType}
+            setStrike={setStrike}
+          />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
           <Orders socket={socket} />

@@ -56,9 +56,16 @@ def handle_join():
 @cross_origin()
 def getOptionsPrice(symbol,date, type, strike):
     print(symbol,date, type, strike)
-    
     ret = connect.getOptionPrice(symbol, date, type, strike)
     socketio.emit("liveOptions", ret)
+    return ""
+
+@socketio.on('getOptionsPriceUpdate', namespace="/")
+@cross_origin()
+def getOptionsPrice(symbol,date, type, strike):
+    print(symbol,date, type, strike)
+    ret = connect.getOptionPrice(symbol, date, type, strike)
+    socketio.emit("liveOptionsUpdate", ret)
     return ""
 
 @socketio.on('place_options_order', namespace="/")
@@ -81,6 +88,7 @@ def sellToClosePosition(symbol, quantity, ask_price):
 @socketio.on('getPositions', namespace="/")
 @cross_origin()
 def getPositions():
+    print("pos")
     ret = connect.getPositions()
     socketio.emit("positions", ret)
     return ""
@@ -88,6 +96,7 @@ def getPositions():
 @socketio.on('getOrders', namespace="/")
 @cross_origin()
 def getOrders():
+    print("orders")
     ret = connect.getOrders()
     socketio.emit("allOrders", ret)
     return ""
@@ -108,6 +117,12 @@ def cancelAllOrders():
     socketio.emit("cancelAllOrdersStatus", ret)
     return ""
 
+@socketio.on('getAccountInfo', namespace="/")
+@cross_origin()
+def getAccountInfo():
+    ret = connect.getAccountInfo()
+    socketio.emit("accountInfo", ret)
+    return ""
 
 
 @app.route("/")

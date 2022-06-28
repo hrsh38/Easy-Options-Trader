@@ -7,14 +7,13 @@ import io from "socket.io-client"
 import TradingViewWidget from "react-tradingview-widget"
 import { InteractiveBroker } from "./Trading-Interface/InteractiveBroker"
 import { Account } from "./Account/Account"
-
 const Apps = () => {
   const [firstSwitch, setFirstSwitch] = useState(false)
   const [post, setPost] = useState([])
   const [message, setMessage] = useState("")
   const [liveOptionsPrice, setLiveOptionsPrice] = useState("")
 
-  const [symbol, setSymbol] = React.useState("AAPL")
+  const [symbol, setSymbol] = React.useState("SPY")
   const [date, setDate] = React.useState("")
   const [type, setType] = React.useState("")
   const [strike, setStrike] = React.useState("")
@@ -86,6 +85,7 @@ const Apps = () => {
         .then((res) => {
           setPost(res.data)
           messageParse(message)
+          document.getElementById("audio").play()
         })
         .catch((err) => {
           console.log(err)
@@ -122,7 +122,17 @@ const Apps = () => {
         <TradingViewWidget symbol={symbol} theme="Dark" autosize />
       </div>
       <div id="se" className="test">
-        <Account socket={socket} />
+        <Account
+          socket={socket}
+          symbol={symbol}
+          date={date}
+          type={type}
+          strike={strike}
+          setSymbol={setSymbol}
+          setDate={setDate}
+          setType={setType}
+          setStrike={setStrike}
+        />
       </div>
     </>
   )
