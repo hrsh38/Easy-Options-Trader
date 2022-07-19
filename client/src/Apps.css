@@ -28,7 +28,7 @@ body {
 #ne {
   background-color: #141414;
   top: 0;
-  left: 50%;
+  left: 0%;
   right: 0;
   bottom: 50%;
 }
@@ -42,7 +42,7 @@ body {
 #se {
   background-color: #141414;
   top: 50%;
-  left: 50%;
+  left: 0%;
   right: 0;
   bottom: 0;
 }

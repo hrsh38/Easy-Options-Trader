@@ -7,6 +7,8 @@ import io from "socket.io-client"
 import TradingViewWidget from "react-tradingview-widget"
 import { InteractiveBroker } from "./Trading-Interface/InteractiveBroker"
 import { Account } from "./Account/Account"
+import TextField from "@mui/material/TextField"
+
 const Apps = () => {
   const [firstSwitch, setFirstSwitch] = useState(false)
   const [post, setPost] = useState([])
@@ -101,9 +103,13 @@ const Apps = () => {
 
   return (
     <>
-      <div id="nw" className="test">
-        <Chats messages={post.messages} messageParse={messageParse} />
-      </div>
+      {/* <div id="nw" className="test">
+        <Chats
+          messages={post.messages}
+          messageParse={messageParse}
+          setMessage={setMessage}
+        />
+      </div> */}
       <div id="ne" className="test">
         <InteractiveBroker
           socket={socket}
@@ -116,11 +122,10 @@ const Apps = () => {
           setType={setType}
           setStrike={setStrike}
         />
-        {/* <button onClick={handleClick}>Join</button> */}
       </div>
-      <div id="sw" className="test">
+      {/* <div id="sw" className="test">
         <TradingViewWidget symbol={symbol} theme="Dark" autosize />
-      </div>
+      </div> */}
       <div id="se" className="test">
         <Account
           socket={socket}

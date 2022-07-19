@@ -60,6 +60,18 @@ export const AccountInfo = (props) => {
           </div>
           <div>
             <Typography sx={{ mb: 1.5 }} color="white">
+              {"Unsettled Cash: "}{" "}
+              {account[0].securitiesAccount.currentBalances.unsettledCash.toLocaleString(
+                "en-US",
+                {
+                  style: "currency",
+                  currency: "USD",
+                }
+              )}
+            </Typography>
+          </div>
+          <div>
+            <Typography sx={{ mb: 1.5 }} color="white">
               {"P/L: "}
               {(
                 account[0].securitiesAccount.currentBalances.liquidationValue -
