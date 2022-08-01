@@ -21,9 +21,14 @@ export const InteractiveBroker = (props) => {
   const [askPrice, setAskPrice] = React.useState(0)
   const [orderStatus, setOrderStatus] = React.useState("")
   const [firstTime, setFirstTime] = React.useState(true)
+  const [recentStocks, setRecentStocks] = React.useState({
+    SPY: "SPY",
+    "$SPX.X": "$SPX.X",
+  })
   const handleClick = useCallback(
     (e) => {
       e.preventDefault()
+
       // console.log(symbol, date, type, strike)
       //options: (symbol,date, type, strike)
       socket.emit("options", symbol, date, type, strike)
@@ -56,6 +61,9 @@ export const InteractiveBroker = (props) => {
       setLiveOptionsPrice(message)
       if (message !== "Invalid Input") {
         setStop(false)
+        if (!recentStocks.hasOwnProperty(symbol)) {
+          setRecentStocks((prevState) => ({ ...prevState, [symbol]: symbol }))
+        }
       } else {
         setOrderStatus(message)
       }
@@ -80,56 +88,213 @@ export const InteractiveBroker = (props) => {
       socket.off("liveOptions", messageListener)
       socket.off("orderStatus", orderStatusUpdate)
     }
-  }, [socket])
+  }, [socket, symbol])
 
+  const handleDateClick = (input) => {
+    var curr = new Date()
+    var lastday
+    if (input === "today") {
+      setDate(curr.getMonth() + 1 + "/" + curr.getDay())
+    } else if (input === "tomorrow") {
+      lastday = new Date(curr.setDate(curr.getDate() + 1))
+      setDate(lastday.getMonth() + 1 + "/" + lastday.getDay())
+    } else if (input === "EOW") {
+      lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 5))
+      setDate(lastday.getMonth() + 1 + "/" + lastday.getDay())
+    }
+  }
+  const getCurrStock = async () => {
+    let h = fetch(
+      "https://api.tdameritrade.com/v1/marketdata/quotes?" +
+        new URLSearchParams({
+          apikey: "DPQIIDYODNBWGFCL5S9OVVHSE0GNWMG8",
+          symbol: symbol,
+        })
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setStrike(Math.floor(data[symbol].lastPrice))
+      })
+  }
   return (
     <div style={{ color: "white", padding: "15px" }}>
       <form onSubmit={handleClick}>
         <label>
           {"Symbol: "}
-          <input
-            type="text"
-            name="symbol"
-            value={symbol}
-            onChange={(e) => {
-              setSymbol(e.target.value)
-            }}
-          />
+          <div className="datefield">
+            <input
+              type="text"
+              name="symbol"
+              value={symbol}
+              onChange={(e) => {
+                setSymbol(e.target.value)
+              }}
+            />
+            <div className="recent-stocks">
+              {Object.keys(recentStocks).map((key, index) => {
+                return (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setSymbol(recentStocks[key])
+                      console.log(recentStocks)
+                    }}
+                    key={index}
+                    style={{ width: "50%" }}
+                  >
+                    {key}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </label>
         <label>
           Date:
-          <input
-            type="text"
-            name="date"
-            value={date}
-            onChange={(e) => {
-              setDate(e.target.value)
-            }}
-          />
+          <div className="datefield">
+            <input
+              type="text"
+              name="date"
+              value={date}
+              onChange={(e) => {
+                setDate(e.target.value)
+              }}
+            />
+            <div>
+              <button
+                tabIndex="-1"
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleDateClick("today")
+                }}
+              >
+                Today
+              </button>
+              <button
+                tabIndex="-1"
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleDateClick("tomorrow")
+                }}
+              >
+                Tomorrow
+              </button>
+              <button
+                tabIndex="-1"
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleDateClick("EOW")
+                }}
+              >
+                EOW
+              </button>
+            </div>
+          </div>
         </label>
         <label>
           Type:
-          <input
-            type="text"
-            name="type"
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value)
-            }}
-          />
+          <div className="datefield">
+            <input
+              type="text"
+              name="type"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value)
+              }}
+            />
+            <div>
+              <button
+                tabIndex="-1"
+                style={{ width: "50%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setType("C")
+                  getCurrStock()
+                }}
+              >
+                Call
+              </button>
+              <button
+                tabIndex="-1"
+                style={{ width: "50%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setType("P")
+                }}
+              >
+                Put
+              </button>
+            </div>
+          </div>
         </label>
         <label>
           Strike:
-          <input
-            type="text"
-            name="strike"
-            value={strike}
-            onChange={(e) => {
-              setStrike(e.target.value)
-            }}
-          />
+          <div className="datefield">
+            <input
+              type="text"
+              name="strike"
+              value={strike}
+              onChange={(e) => {
+                setStrike(e.target.value)
+              }}
+            />
+            <div>
+              <button
+                tabIndex="-1"
+                style={{ width: "17%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setStrike(strike - 5)
+                }}
+              >
+                -5
+              </button>
+              <button
+                tabIndex="-1"
+                style={{ width: "17%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setStrike(strike - 1)
+                }}
+              >
+                -1
+              </button>
+              <button
+                tabIndex="-1"
+                style={{ width: "32%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  getCurrStock()
+                }}
+              >
+                Current
+              </button>
+              <button
+                tabIndex="-1"
+                style={{ width: "17%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setStrike(strike + 1)
+                }}
+              >
+                +1
+              </button>
+              <button
+                tabIndex="-1"
+                style={{ width: "17%" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setStrike(strike + 5)
+                }}
+              >
+                +5
+              </button>
+            </div>
+          </div>
         </label>
-        <input type="submit" value="Get Quote" />
+        <div className="quote-button">
+          <input type="submit" value="Get Quote" />
+        </div>
       </form>
       {liveOptionsPrice !== "Invalid Input" && !stop ? (
         <>

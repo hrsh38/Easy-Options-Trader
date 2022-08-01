@@ -96,6 +96,13 @@ export const Positions = (props) => {
       sortable: false,
     },
     {
+      field: "profitLossUSD",
+      headerName: "P/L($)",
+      width: 110,
+      editable: false,
+      sortable: false,
+    },
+    {
       field: "close",
       headerName: "Close",
       editable: false,
@@ -206,6 +213,17 @@ export const Positions = (props) => {
             currentPrice: parseFloat(
               posData.marketValue / (100 * posData.longQuantity)
             ).toFixed(3),
+            profitLossUSD:
+              "$" +
+              (
+                (posData.longQuantity *
+                  parseFloat(
+                    posData.marketValue / (100 * posData.longQuantity)
+                  ).toFixed(3) -
+                  posData.longQuantity *
+                    parseFloat(posData.averagePrice.toFixed(3))) *
+                100
+              ).toFixed(2),
           })
         }
       )

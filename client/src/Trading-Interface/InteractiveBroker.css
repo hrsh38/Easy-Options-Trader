@@ -1,0 +1,25 @@
+.datefield {
+  display: flex;
+  flex-direction: column;
+}
+label {
+  display: inline-block;
+  margin-right: 10px;
+}
+input {
+  display: block;
+}
+form {
+  display: flex;
+}
+
+.quote-button {
+  margin-top: 18px;
+}
+
+.recent-stocks {
+  display: flex;
+  /* flex-direction: column; */
+  width: 170.5px;
+  flex-wrap: wrap;
+}
