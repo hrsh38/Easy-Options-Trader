@@ -33,6 +33,7 @@ export const InteractiveBroker = (props) => {
       //options: (symbol,date, type, strike)
       socket.emit("options", symbol, date, type, strike)
       setOrderStatus("")
+      setAskPrice(0)
     },
     [symbol, date, type, strike]
   )
@@ -135,6 +136,7 @@ export const InteractiveBroker = (props) => {
       }}
       onKeyDown={(e) => {
         setStop(true)
+        setAskPrice(0)
         // if (e.key === "Enter") {
         //   handleClick()
         // }
@@ -213,7 +215,7 @@ export const InteractiveBroker = (props) => {
                     handleDateClick("EOW")
                   }}
                 >
-                  EOW
+                  Friday
                 </button>
               </div>
             </div>
