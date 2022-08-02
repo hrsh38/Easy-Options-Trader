@@ -60,6 +60,7 @@ export const InteractiveBroker = (props) => {
 
   useEffect(() => {
     const messageListener = (message) => {
+      setLiveOptionsPrice(message[0])
       if (message !== "Invalid Input") {
         setLiveOptionsPrice(message[0])
         setHighLiveOptionsPrice(message[1])
@@ -241,20 +242,20 @@ export const InteractiveBroker = (props) => {
                   style={{ width: "50%" }}
                   onClick={(e) => {
                     //e.preventDefault()
-                    setType("C")
+                    setType("P")
                   }}
                 >
-                  Call
+                  Put
                 </button>
                 <button
                   tabIndex="-1"
                   style={{ width: "50%" }}
                   onClick={(e) => {
                     //e.preventDefault()
-                    setType("P")
+                    setType("C")
                   }}
                 >
-                  Put
+                  Call
                 </button>
               </div>
             </div>
@@ -405,7 +406,7 @@ export const InteractiveBroker = (props) => {
             </div>
           </>
         ) : (
-          <>{orderStatus}</>
+          <>{orderStatus || "Invalid Input"}</>
         )}
       </div>
     </div>

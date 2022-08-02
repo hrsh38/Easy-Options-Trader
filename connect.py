@@ -51,7 +51,7 @@ def getOptionPrice(symbol,date, type, strike):
         return response
 
     except:
-        return "Invalid Input"
+        return ["Invalid Input"]
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
 
