@@ -46,16 +46,16 @@ def getOptionPrice(symbol,date, type, strike):
 
 
         res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=end_date).json()
-        # print(res)
-        response = nested_lookup('mark', res)
-        return response[0]
+        response = [nested_lookup('mark', res)[0], nested_lookup('highPrice', res)[0], nested_lookup('lowPrice', res)[0]]
+
+        return response
 
     except:
         return "Invalid Input"
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
 
-# print(getOptionPrice("SPX", "?6/13", "P", "3800"))
+print(getOptionPrice("SPY", "8/2", "P", "410"))
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
 

@@ -16,6 +16,8 @@ export const InteractiveBroker = (props) => {
     setStrike,
   } = props
   const [liveOptionsPrice, setLiveOptionsPrice] = React.useState("")
+  const [highLiveOptionsPrice, setHighLiveOptionsPrice] = React.useState("")
+  const [lowLiveOptionsPrice, setLowLiveOptionsPrice] = React.useState("")
   const [stop, setStop] = React.useState(true)
   const [quantity, setQuantity] = React.useState(1)
   const [askPrice, setAskPrice] = React.useState(0)
@@ -58,8 +60,10 @@ export const InteractiveBroker = (props) => {
 
   useEffect(() => {
     const messageListener = (message) => {
-      setLiveOptionsPrice(message)
       if (message !== "Invalid Input") {
+        setLiveOptionsPrice(message[0])
+        setHighLiveOptionsPrice(message[1])
+        setLowLiveOptionsPrice(message[2])
         setStop(false)
         if (!recentStocks.hasOwnProperty(symbol)) {
           setRecentStocks((prevState) => ({ ...prevState, [symbol]: symbol }))
@@ -342,6 +346,8 @@ export const InteractiveBroker = (props) => {
                 strike={strike}
                 socket={socket}
                 setAskPrice={setAskPrice}
+                lowLiveOptionsPrice={lowLiveOptionsPrice}
+                highLiveOptionsPrice={highLiveOptionsPrice}
               />
             </div>
             <div className="quote-right">

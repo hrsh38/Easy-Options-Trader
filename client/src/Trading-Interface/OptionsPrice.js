@@ -1,8 +1,17 @@
 import React from "react"
 
 export const OptionsPrice = (props) => {
-  const { liveOptionsPrice, symbol, date, type, strike, socket, setAskPrice } =
-    props
+  const {
+    liveOptionsPrice,
+    symbol,
+    date,
+    type,
+    strike,
+    socket,
+    setAskPrice,
+    lowLiveOptionsPrice,
+    highLiveOptionsPrice,
+  } = props
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -32,6 +41,16 @@ export const OptionsPrice = (props) => {
         style={{ cursor: "pointer" }}
       >
         {liveOptionsPrice}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
+        <div>Low: {lowLiveOptionsPrice}</div>
+        <div>High: {highLiveOptionsPrice}</div>
       </div>
     </>
   )
