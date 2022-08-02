@@ -64,6 +64,7 @@ export const InteractiveBroker = (props) => {
           setRecentStocks((prevState) => ({ ...prevState, [symbol]: symbol }))
         }
         setCurrentOrderInfo(symbol + "  " + date + "  $" + strike + "" + type)
+        setOrderStatus("")
       } else {
         setOrderStatus(message)
       }
@@ -132,12 +133,12 @@ export const InteractiveBroker = (props) => {
         // overflow: "scroll",
         height: "-webkit-fill-available",
       }}
-      // onKeyDown={(e) => {
-      //   console.log(e.key)
-      //   if (e.key === "-") {
-      //     document.getElementById("symbol").focus()
-      //   }
-      // }}
+      onKeyDown={(e) => {
+        setStop(true)
+        // if (e.key === "Enter") {
+        //   handleClick()
+        // }
+      }}
     >
       <div className="quote-form">
         <form onSubmit={handleClick}>
@@ -163,7 +164,7 @@ export const InteractiveBroker = (props) => {
                         getCurrStock(recentStocks[key])
                       }}
                       key={index}
-                      style={{ width: "50%" }}
+                      style={{ width: "33.3%" }}
                     >
                       {key}
                     </button>
@@ -183,9 +184,10 @@ export const InteractiveBroker = (props) => {
                   setDate(e.target.value)
                 }}
               />
-              <div>
+              <div style={{ width: "100%" }}>
                 <button
                   tabIndex="-1"
+                  style={{ width: "30%" }}
                   onClick={(e) => {
                     //e.preventDefault()
                     handleDateClick("today")
@@ -195,6 +197,7 @@ export const InteractiveBroker = (props) => {
                 </button>
                 <button
                   tabIndex="-1"
+                  style={{ width: "40%" }}
                   onClick={(e) => {
                     //e.preventDefault()
                     handleDateClick("tomorrow")
@@ -204,6 +207,7 @@ export const InteractiveBroker = (props) => {
                 </button>
                 <button
                   tabIndex="-1"
+                  style={{ width: "30%" }}
                   onClick={(e) => {
                     //e.preventDefault()
                     handleDateClick("EOW")
@@ -315,7 +319,11 @@ export const InteractiveBroker = (props) => {
             </div>
           </label>
           <div className="quote-button">
-            <input type="submit" value="Get Quote" />
+            <input
+              type="submit"
+              value="GET QUOTE"
+              className="get-quote-button"
+            />
           </div>
         </form>
       </div>
@@ -335,45 +343,47 @@ export const InteractiveBroker = (props) => {
               />
             </div>
             <div className="quote-right">
-              <label>
-                Quantity:
-                <input
-                  type="number"
-                  name="quantity"
-                  min={1}
-                  value={quantity}
-                  onChange={(e) => {
-                    setQuantity(e.target.value)
+              <div className="quote-right-top">
+                <label>
+                  Quantity:
+                  <input
+                    type="number"
+                    name="quantity"
+                    min={1}
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value)
+                    }}
+                  />
+                </label>
+                <label>
+                  Ask Price:
+                  <input
+                    type="text"
+                    name="askPrice"
+                    value={askPrice}
+                    onChange={(e) => {
+                      setAskPrice(e.target.value)
+                    }}
+                  />
+                </label>
+                <button
+                  className="send-button"
+                  onClick={handleSendOrder}
+                  // style={{ color: "white", background: "green" }}
+                >
+                  SEND
+                </button>
+                <button
+                  className="cancel-button"
+                  onClick={() => {
+                    setStop(true)
                   }}
-                />
-              </label>
-              <label>
-                Ask Price:
-                <input
-                  type="text"
-                  name="askPrice"
-                  value={askPrice}
-                  onChange={(e) => {
-                    setAskPrice(e.target.value)
-                  }}
-                />
-              </label>
-              <button
-                className="send-button"
-                onClick={handleSendOrder}
-                // style={{ color: "white", background: "green" }}
-              >
-                SEND ORDER
-              </button>
-              <button
-                className="cancel-button"
-                onClick={() => {
-                  setStop(true)
-                }}
-              >
-                CANCEL
-              </button>
-              <div style={{ marginTop: "10px" }}>
+                >
+                  CANCEL
+                </button>
+              </div>
+              <div style={{ marginTop: "13px" }}>
                 Cost:{" "}
                 {(parseFloat(askPrice) * quantity * 100).toLocaleString(
                   "en-US",
