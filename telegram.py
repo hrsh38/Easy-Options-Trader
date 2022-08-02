@@ -154,8 +154,8 @@ def b():
         if event.photo:
             print(event.photo)
 
-            photo_1 = Image.open(event.message.media.photo)
-            print(photo_1)
+            # photo_1 = Image.open(event.message.media.photo)
+            # print(photo_1)
             # image_buf = BytesIO()
             # photo_1.save(image_buf, format="JPEG")
             # image = image_buf.getvalue()

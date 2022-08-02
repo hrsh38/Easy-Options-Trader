@@ -23,3 +23,55 @@ form {
   width: 170.5px;
   flex-wrap: wrap;
 }
+
+.quote-form {
+  height: 50%;
+}
+
+.quote-book {
+  height: 50%;
+  display: flex;
+  width: 100%;
+}
+
+.options-price {
+  justify-content: center;
+  display: flex;
+  border: white 1px solid;
+  padding: 10px;
+}
+.options-price:active {
+  justify-content: center;
+  display: flex;
+  border: white 1px solid;
+  padding: 10px;
+  color: black;
+  background: white;
+}
+
+.order-info {
+  display: flex;
+  margin: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.quote-left {
+  margin-right: 50px;
+}
+
+.quote-right {
+}
+
+.send-button {
+  color: white;
+  background-color: green;
+}
+.cancel-button {
+  color: white;
+  background-color: red;
+}

@@ -1,3 +1,4 @@
+from distutils.log import error
 import requests
 from tda import auth, client
 import json
@@ -58,20 +59,23 @@ def getOptionPrice(symbol,date, type, strike):
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
 
-    newSymbol = OptionSymbol(
-    symbol, datetime.date(year=2022, month=int(date_month), day=int(date_day)), type, strike).build()
-    print(newSymbol)
-    # h = c.get_option_chain(newSymbol).json()
-    order = c.place_order(config.account_id,
-                  option_buy_to_open_limit(newSymbol, int(quantity), float(ask_price))
-                  .set_duration(Duration.GOOD_TILL_CANCEL)
-                  .set_session(Session.NORMAL)
-                  .build())
-    print(order)
+    try:
+        todays_date = datetime.date.today()
+        newSymbol = OptionSymbol(
+        symbol, datetime.date(year=todays_date.year, month=int(date_month), day=int(date_day)), type, strike).build()
+        print(newSymbol)
+        # h = c.get_option_chain(newSymbol).json()
+        order = c.place_order(config.account_id,
+                    option_buy_to_open_limit(newSymbol, int(quantity), float(ask_price))
+                    .set_duration(Duration.GOOD_TILL_CANCEL)
+                    .set_session(Session.NORMAL)
+                    .build())
+        print(order)
+    except error:
+        print(error)
     return order
     # print(h)
 # symbol, date_month, date_day, type, strike, quantity, ask_price
-# placeOptionsOrder("SPXW", "6", "13", "P", "3800", "1", "0.01")
 
 def getOrders():
     # start_date = datetime.datetime.now() - datetime.timedelta(10)

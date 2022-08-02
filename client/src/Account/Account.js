@@ -100,6 +100,7 @@ export const Account = (props) => {
           textColor="inherit"
           variant="fullWidth"
           aria-label=""
+          visibleScrollbar
         >
           <Tab label="Account Info" {...a11yProps(0)} />
           <Tab label="Positions" {...a11yProps(1)} />

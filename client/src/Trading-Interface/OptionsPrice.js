@@ -13,13 +13,24 @@ export const OptionsPrice = (props) => {
   })
   return (
     <>
+      <div className="order-info">
+        <div>{symbol}</div>
+        {"\u00A0"}
+        <div>{date}</div>
+        {"\u00A0$"}
+        <div>{strike}</div>
+        {"\u00A0"}
+        <div style={type === "C" ? { color: "green" } : { color: "red" }}>
+          {type}
+        </div>
+      </div>
       <div
         onClick={() => {
           setAskPrice(liveOptionsPrice)
         }}
+        className="options-price"
         style={{ cursor: "pointer" }}
       >
-        {"Live Options Price: "}
         {liveOptionsPrice}
       </div>
     </>
