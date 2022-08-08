@@ -99,15 +99,16 @@ export const InteractiveBroker = (props) => {
 
   const handleDateClick = (input) => {
     var curr = new Date()
+    console.log(curr)
     var lastday
     if (input === "today") {
-      setDate(curr.getMonth() + 1 + "/" + curr.getDay())
+      setDate(curr.getMonth() + 1 + "/" + curr.getDate())
     } else if (input === "tomorrow") {
       lastday = new Date(curr.setDate(curr.getDate() + 1))
-      setDate(lastday.getMonth() + 1 + "/" + lastday.getDay())
+      setDate(lastday.getMonth() + 1 + "/" + lastday.getDate())
     } else if (input === "EOW") {
       lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 5))
-      setDate(lastday.getMonth() + 1 + "/" + lastday.getDay())
+      setDate(lastday.getMonth() + 1 + "/" + lastday.getDate())
     }
   }
 
