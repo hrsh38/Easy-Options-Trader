@@ -1,0 +1,4 @@
+Features:
+- full out chart with bitmex like capabilities for orders and moving stop losses
+- Add intrecate watchlist with indicators for whether its been hit or not
+- add risk level based on greeks and implied volatility
