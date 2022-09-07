@@ -169,7 +169,7 @@ export const Positions = (props) => {
   const send = React.useCallback((e) => {
     e.preventDefault()
     setOpen(false)
-    socket.emit("sellPosition", currSymbol, quantity, askPrice[0])
+    socket.emit("sellPosition", currSymbol, quantity, askPrice)
     socket.emit("getOrders")
   })
 
