@@ -27,6 +27,8 @@ export const InteractiveBroker = (props) => {
     SPY: "SPY",
     "$SPX.X": "$SPX.X",
     QQQ: "QQQ",
+    AAPL: "AAPL",
+    TSLA: "TSLA",
   })
   const [currentOrderInfo, setCurrentOrderInfo] = React.useState("")
   const handleClick = useCallback(
@@ -54,6 +56,7 @@ export const InteractiveBroker = (props) => {
         quantity,
         askPrice
       )
+      setQuantity(1)
     },
     [symbol, date, type, strike, quantity, askPrice]
   )
@@ -141,8 +144,8 @@ export const InteractiveBroker = (props) => {
         height: "-webkit-fill-available",
       }}
       onKeyDown={(e) => {
-        setStop(true)
-        setAskPrice(0)
+        // setStop(true)
+        // setAskPrice(0)
         // if (e.key === "Enter") {
         //   handleClick()
         // }

@@ -169,7 +169,7 @@ export const Positions = (props) => {
   const send = React.useCallback((e) => {
     e.preventDefault()
     setOpen(false)
-    socket.emit("sellPosition", currSymbol, quantity, askPrice)
+    socket.emit("sellPosition", currSymbol, quantity, askPrice[0])
     socket.emit("getOrders")
   })
 
@@ -294,10 +294,10 @@ export const Positions = (props) => {
               autoFocus
               id="currPrice"
               type="text"
-              value={liveOptionsPrice}
+              value={liveOptionsPrice[0]}
               contentEditable={false}
               onClick={() => {
-                setAskPrice(liveOptionsPrice)
+                setAskPrice(liveOptionsPrice[0])
               }}
               sx={{ cursor: "pointer" }}
               style={{ cursor: "pointer" }}
