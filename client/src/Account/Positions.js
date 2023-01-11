@@ -4,15 +4,16 @@ import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import IconButton from "@mui/material/IconButton"
 import "./Positions.css"
-import { Button } from "@mui/material"
+import { Button, InputLabel } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
+// import InputLabel from "@mui/material/InputLabel"
 import DialogTitle from "@mui/material/DialogTitle"
 import { OptionsPrice } from "./OptionsPrice"
+import RefreshIcon from "@mui/icons-material/Refresh"
 
 export const Positions = (props) => {
   const {
@@ -192,39 +193,41 @@ export const Positions = (props) => {
       JSON.parse(pos)[0]["securitiesAccount"]["positions"].forEach(
         (posData, index) => {
           // console.log(posData)
-          tempRows.push({
-            id: index,
-            date:
-              posData.instrument.symbol.split("_")[1].substring(0, 2) +
-              "/" +
-              posData.instrument.symbol.split("_")[1].substring(2, 4),
-            ticker: posData.instrument.underlyingSymbol,
-            type:
-              "$" +
-              posData.instrument.description.split(" ")[4] +
-              " " +
-              posData.instrument.putCall.substring(0, 1),
-            quantity: posData.longQuantity,
-            value: "$" + posData.marketValue,
-            profitLoss: posData.currentDayProfitLossPercentage + "%",
-            close: posData,
-            symbol: posData.instrument.symbol,
-            averagePrice: parseFloat(posData.averagePrice).toFixed(3),
-            currentPrice: parseFloat(
-              posData.marketValue / (100 * posData.longQuantity)
-            ).toFixed(3),
-            profitLossUSD:
-              "$" +
-              (
-                (posData.longQuantity *
-                  parseFloat(
-                    posData.marketValue / (100 * posData.longQuantity)
-                  ).toFixed(3) -
-                  posData.longQuantity *
-                    parseFloat(posData.averagePrice.toFixed(3))) *
-                100
-              ).toFixed(2),
-          })
+          if (posData.instrument.assetType === "OPTION") {
+            tempRows.push({
+              id: index,
+              date:
+                posData.instrument.symbol.split("_")[1].substring(0, 2) +
+                "/" +
+                posData.instrument.symbol.split("_")[1].substring(2, 4),
+              ticker: posData.instrument.underlyingSymbol,
+              type:
+                "$" +
+                posData.instrument.description.split(" ")[4] +
+                " " +
+                posData.instrument.putCall.substring(0, 1),
+              quantity: posData.longQuantity,
+              value: "$" + posData.marketValue,
+              profitLoss: posData.currentDayProfitLossPercentage + "%",
+              close: posData,
+              symbol: posData.instrument.symbol,
+              averagePrice: parseFloat(posData.averagePrice).toFixed(3),
+              currentPrice: parseFloat(
+                posData.marketValue / (100 * posData.longQuantity)
+              ).toFixed(3),
+              profitLossUSD:
+                "$" +
+                (
+                  (posData.longQuantity *
+                    parseFloat(
+                      posData.marketValue / (100 * posData.longQuantity)
+                    ).toFixed(3) -
+                    posData.longQuantity *
+                      parseFloat(posData.averagePrice.toFixed(3))) *
+                  100
+                ).toFixed(2),
+            })
+          }
         }
       )
       setRows(tempRows)
@@ -262,80 +265,7 @@ export const Positions = (props) => {
 
   return (
     <div id="dialog" style={{ position: "relative" }}>
-      <Dialog open={open} onClose={handleClose} fullWidth={true}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <DialogTitle>Close Position</DialogTitle>
-          <div onClick={refreshPrice}>Refresh</div>
-        </div>
-        <div className="dialog-content">
-          <div className="dialog-form">
-            <DialogContentText>Symbol</DialogContentText>
-            <TextField
-              autoFocus
-              id="symbol"
-              type="text"
-              value={currSymbol}
-              contentEditable={false}
-            />
-          </div>
-          <div className="dialog-form">
-            <DialogContentText>Average Price</DialogContentText>
-            <TextField
-              autoFocus
-              id="avgPrice"
-              type="text"
-              value={currAveragePrice}
-              contentEditable={false}
-            />
-          </div>
-          <div className="dialog-form">
-            <DialogContentText>Average Price</DialogContentText>
-            <TextField
-              autoFocus
-              id="currPrice"
-              type="text"
-              value={liveOptionsPrice[0]}
-              contentEditable={false}
-              onClick={() => {
-                setAskPrice(liveOptionsPrice[0])
-              }}
-              sx={{ cursor: "pointer" }}
-              style={{ cursor: "pointer" }}
-            />
-          </div>
-          <div className="dialog-form">
-            <DialogContentText>Quantity</DialogContentText>
-            <TextField
-              autoFocus
-              id="name"
-              type="number"
-              value={quantity}
-              onChange={(e) => {
-                console.log(e.target.value)
-                let setValue =
-                  e.target.value <= maxQuantity ? e.target.value : maxQuantity
-                setQuantity(setValue)
-              }}
-            />
-          </div>
-          <div className="dialog-form">
-            <DialogContentText>Ask Price</DialogContentText>
-            <TextField
-              autoFocus
-              id="name"
-              type="text"
-              value={askPrice}
-              onChange={(e) => {
-                setAskPrice(e.target.value)
-              }}
-            />
-          </div>
-        </div>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={send}>Send</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Rows of Positions */}
       {rows.length > 0 ? (
         <>
           <div style={{ width: "100%" }}>
@@ -367,6 +297,117 @@ export const Positions = (props) => {
       ) : (
         <> No positions</>
       )}
+      {/* Dialog for closing a position */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="xs"
+        className="dialog"
+      >
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h2>
+            Close Position
+            <Button
+              style={{ display: "flex", color: "white" }}
+              onClick={refreshPrice}
+            >
+              <RefreshIcon></RefreshIcon>
+            </Button>
+          </h2>
+          {/* <div onClick={refreshPrice}>Refresh</div> */}
+        </div>
+        <div className="dialog-content">
+          <div className="editable-fields">
+            <div className="dialog-form">
+              <label className="label-dialog">Symbol: </label>
+              <label
+                readonly
+                className="input"
+                type="text"
+                contentEditable={false}
+              >
+                {currSymbol !== ""
+                  ? ((sym) => {
+                      let arr = sym.match(/[a-zA-Z]+|[0-9]+/gm)
+                      let symbol = arr[0],
+                        date =
+                          arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
+                        type = arr[2],
+                        strike = arr[3]
+                      return symbol + "  " + date + "  " + type + "  $" + strike
+                    })(currSymbol)
+                  : ""}
+              </label>
+            </div>
+          </div>
+          <div className="editable-fields" style={{ marginTop: "2px" }}>
+            <div className="dialog-form ef-50">
+              <label className="label-dialog">Average Price:</label>
+              <label
+                readonly
+                className="input"
+                type="text"
+                contentEditable={false}
+              >
+                {currAveragePrice}
+              </label>
+            </div>
+            <div className="dialog-form ef-50">
+              <label className="label-dialog">Current Price:</label>
+              <label
+                readonly
+                className="input-1"
+                type="text"
+                contentEditable={false}
+                onClick={() => {
+                  setAskPrice(liveOptionsPrice[0])
+                }}
+                sx={{ cursor: "pointer" }}
+                style={{ cursor: "pointer" }}
+              >
+                {liveOptionsPrice.toString().split(",")[0]}
+              </label>
+            </div>
+          </div>
+          <div className="editable-fields">
+            <div className="dialog-form ef-50">
+              <label className="label-dialog">Ask Price:</label>
+              <input
+                className="input"
+                id="name"
+                type="text"
+                value={askPrice}
+                onChange={(e) => {
+                  setAskPrice(e.target.value)
+                }}
+              />
+            </div>
+            <div className="dialog-form ef-50">
+              <label className="label-dialog">Quantity:</label>
+              <input
+                className="input"
+                id="name"
+                type="number"
+                value={quantity}
+                onChange={(e) => {
+                  console.log(e.target.value)
+                  let setValue =
+                    e.target.value <= maxQuantity ? e.target.value : maxQuantity
+                  setQuantity(setValue)
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="bottom-dialog">
+          <button onClick={handleClose} className="cancel-button">
+            Cancel
+          </button>
+          <button onClick={send} className="send-button">
+            Send
+          </button>
+        </div>
+      </Dialog>
     </div>
   )
 }

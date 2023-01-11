@@ -23,12 +23,14 @@ export const InteractiveBroker = (props) => {
   const [askPrice, setAskPrice] = React.useState(0)
   const [orderStatus, setOrderStatus] = React.useState("")
   const [firstTime, setFirstTime] = React.useState(true)
+  const [weeklyOffsetInput, setWeeklyOffsetInput] = React.useState(0)
   const [recentStocks, setRecentStocks] = React.useState({
     SPY: "SPY",
     "$SPX.X": "$SPX.X",
     QQQ: "QQQ",
     AAPL: "AAPL",
     TSLA: "TSLA",
+    AMZN: "AMZN",
   })
   const [currentOrderInfo, setCurrentOrderInfo] = React.useState("")
   const handleClick = useCallback(
@@ -104,6 +106,7 @@ export const InteractiveBroker = (props) => {
     var curr = new Date()
     console.log(curr)
     var lastday
+    setWeeklyOffsetInput(0)
     if (input === "today") {
       setDate(curr.getMonth() + 1 + "/" + curr.getDate())
     } else if (input === "tomorrow") {
@@ -113,6 +116,15 @@ export const InteractiveBroker = (props) => {
       lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 5))
       setDate(lastday.getMonth() + 1 + "/" + lastday.getDate())
     }
+  }
+
+  const handleDateClickWeekly = (input) => {
+    setWeeklyOffsetInput(weeklyOffsetInput + input)
+    let curr = new Date()
+    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 5))
+    lastday.setDate(lastday.getDate() + (input + weeklyOffsetInput) * 7)
+    console.log(lastday)
+    setDate(lastday.getMonth() + 1 + "/" + lastday.getDate())
   }
 
   const getCurrStock = async (s) => {
@@ -225,6 +237,28 @@ export const InteractiveBroker = (props) => {
                   }}
                 >
                   Friday
+                </button>
+              </div>
+              <div style={{ width: "100%" }}>
+                <button
+                  tabIndex="-1"
+                  style={{ width: "50%" }}
+                  onClick={(e) => {
+                    //e.preventDefault()
+                    handleDateClickWeekly(-1)
+                  }}
+                >
+                  -1 Week
+                </button>
+                <button
+                  tabIndex="-1"
+                  style={{ width: "50%" }}
+                  onClick={(e) => {
+                    //e.preventDefault()
+                    handleDateClickWeekly(1)
+                  }}
+                >
+                  +1 Week
                 </button>
               </div>
             </div>
@@ -391,6 +425,7 @@ export const InteractiveBroker = (props) => {
                   className="cancel-button"
                   onClick={() => {
                     setStop(true)
+                    setQuantity(1)
                   }}
                 >
                   CANCEL

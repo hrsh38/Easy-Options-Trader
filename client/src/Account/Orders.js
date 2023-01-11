@@ -154,6 +154,13 @@ export const Orders = (props) => {
               }}
             />
           </div>
+          <Button
+            onClick={() => {
+              socket.emit("getOrders")
+            }}
+          >
+            Refresh
+          </Button>
         </>
       ) : (
         <>No Orders</>

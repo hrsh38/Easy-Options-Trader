@@ -3,4 +3,7 @@ venv
 client/node_modules
 *.pyc
 Test.session-journal
+config.py
+secret.json
+token
 

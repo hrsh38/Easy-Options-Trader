@@ -3,3 +3,4 @@ Features:
 - Add intrecate watchlist with indicators for whether its been hit or not
 - add risk level based on greeks and implied volatility
 - add news section for holding positions/looking up for 
+- sentiment based on products or annoucements of the company

@@ -62,7 +62,7 @@ export const Account = (props) => {
     setStrike,
   } = props
   const theme = useTheme()
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = React.useState(1)
   const [firstTime, setFirstTime] = React.useState(true)
 
   const handleChange = (event, newValue) => {

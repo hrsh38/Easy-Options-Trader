@@ -36,13 +36,14 @@ except FileNotFoundError:
 
 def getOptionPrice(symbol,date, type, strike):
     # print(symbol,date, type, strike)
+    year = str(datetime.date.today().year)
+
+
     try:
         callPut = c.Options.ContractType.CALL if type.upper() == "C" else c.Options.ContractType.PUT
 
-
-
-        start_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date();
-        end_date = datetime.datetime.strptime(date+"/2022", '%m/%d/%Y').date() + datetime.timedelta(1);
+        start_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date();
+        end_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date() + datetime.timedelta(1);
 
 
         res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=end_date).json()
@@ -55,7 +56,7 @@ def getOptionPrice(symbol,date, type, strike):
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
 
-print(getOptionPrice("SPY", "8/2", "P", "410"))
+# print(getOptionPrice("SPY", "1/11", "C", "390"))
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
 
@@ -63,7 +64,7 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
         todays_date = datetime.date.today()
         newSymbol = OptionSymbol(
         symbol, datetime.date(year=todays_date.year, month=int(date_month), day=int(date_day)), type, strike).build()
-        print(newSymbol)
+        print("h"+ newSymbol)
         # h = c.get_option_chain(newSymbol).json()
         order = c.place_order(config.account_id,
                     option_buy_to_open_limit(newSymbol, int(quantity), float(ask_price))
@@ -75,6 +76,7 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
         print(error)
     return order
     # print(h)
+
 # symbol, date_month, date_day, type, strike, quantity, ask_price
 
 def getOrders():
@@ -108,7 +110,7 @@ def cancelAllOrders():
 # cancelAllOrders()
 
 def getPositions():
-    positions = json.dumps(c.get_accounts(fields=[Client.Account.Fields.POSITIONS]).json(), indent=4, sort_keys=True)
+    positions = json.dumps(c.get_accounts(fields=[Client.Account.Fields.POSITIONS]).json(), indent=8, sort_keys=True)
     # print(positions)
     return positions
 
@@ -127,3 +129,4 @@ def getAccountInfo():
     return accountInfo
 
 # getAccountInfo()
+

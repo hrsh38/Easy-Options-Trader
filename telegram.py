@@ -147,9 +147,9 @@ def b():
 
     # user_input_channel = "https://t.me/testingtestertest"
 
-    client = TelegramClient('Test', api_id, api_hash).start()
+    # client = TelegramClient('Test', api_id, api_hash).start()
 
-    @client.on(events.NewMessage())
+    # @client.on(events.NewMessage())
     async def newMessage(event):
         if event.photo:
             print(event.photo)
@@ -176,8 +176,8 @@ def b():
             print(error)
         # print(newMessage)
 
-    with client:
-        client.run_until_disconnected()
+    # with client:
+    #     client.run_until_disconnected()
 
 
 if __name__ == "__main__":
