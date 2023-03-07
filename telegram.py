@@ -101,6 +101,14 @@ def getOrders():
     socketio.emit("allOrders", ret)
     return ""
 
+@socketio.on('getLastOrderStatus', namespace="/")
+@cross_origin()
+def getOrdersOnce():
+    ret = connect.getLastOrderStatus()
+    print("Last Order Status: " ,ret)
+    socketio.emit("lastOrderStatus", ret)
+    return ""
+
 @socketio.on('cancelOrders', namespace="/")
 @cross_origin()
 def cancelOrders(id):

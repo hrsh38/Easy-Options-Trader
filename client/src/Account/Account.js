@@ -11,13 +11,7 @@ import { Positions } from "./Positions"
 import { Orders } from "./Orders"
 import { AccountInfo } from "./AccountInfo"
 import "./Account.css"
-import Snackbar from "@mui/material/Snackbar"
-import MuiAlert, { AlertProps } from "@mui/material/Alert"
-import { Button, InputLabel } from "@mui/material"
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
 const styles = {
   snackbarStyleViaContentProps: {
     backgroundColor: "orange",
@@ -76,23 +70,12 @@ export const Account = (props) => {
     setDate,
     setType,
     setStrike,
+    sendAlert,
   } = props
   const theme = useTheme()
   const [value, setValue] = React.useState(1)
   const [firstTime, setFirstTime] = React.useState(true)
-  const [openAlert, setOpenAlert] = React.useState(false)
 
-  const handleClick = () => {
-    setOpenAlert(true)
-  }
-
-  const handleCloseAlert = (event, reason) => {
-    if (reason === "clickaway") {
-      return
-    }
-
-    setOpenAlert(false)
-  }
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -119,27 +102,6 @@ export const Account = (props) => {
         color: "white",
       }}
     >
-      <Button variant="outlined" onClick={handleClick}>
-        Open success snackbar
-      </Button>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={openAlert}
-        autoHideDuration={3000}
-        onClose={handleCloseAlert}
-      >
-        <Alert
-          onClose={handleCloseAlert}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          This is a success message!
-        </Alert>
-      </Snackbar>
-
       <AppBar position="static">
         <Tabs
           value={value}
@@ -175,11 +137,11 @@ export const Account = (props) => {
             setDate={setDate}
             setType={setType}
             setStrike={setStrike}
-            openAlert={handleClick}
+            sendAlert={sendAlert}
           />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
-          <Orders socket={socket} />
+          <Orders socket={socket} sendAlert={sendAlert} />
         </TabPanel>
       </SwipeableViews>
     </Box>

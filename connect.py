@@ -45,7 +45,7 @@ def getOptionPrice(symbol,date, type, strike):
         start_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date();
         end_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date() + datetime.timedelta(1);
 
-
+        
         res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=end_date).json()
         response = [nested_lookup('mark', res)[0], nested_lookup('highPrice', res)[0], nested_lookup('lowPrice', res)[0]]
 
@@ -56,16 +56,17 @@ def getOptionPrice(symbol,date, type, strike):
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
 
-# print(getOptionPrice("SPY", "1/11", "C", "390"))
+# print(getOptionPrice("$SPX.X", "03/06", "C", "4050"))
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
-
+    if(symbol == "$SPX.X"):
+        symbol = "SPXW"
     try:
         todays_date = datetime.date.today()
         newSymbol = OptionSymbol(
         symbol, datetime.date(year=todays_date.year, month=int(date_month), day=int(date_day)), type, strike).build()
-        print("h"+ newSymbol)
         # h = c.get_option_chain(newSymbol).json()
+        # print(h)
         order = c.place_order(config.account_id,
                     option_buy_to_open_limit(newSymbol, int(quantity), float(ask_price))
                     .set_duration(Duration.GOOD_TILL_CANCEL)
@@ -73,19 +74,36 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
                     .build())
         print(order)
     except error:
+        # print(order)
         print(error)
     return order
     # print(h)
 
+# placeOptionsOrder("SPXW", "3", "6", "P", "4050", "1", "1.00")
 # symbol, date_month, date_day, type, strike, quantity, ask_price
 
 def getOrders():
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
-    orders = c.get_orders_by_query(max_results=5).json()
-    # print(orders)
+    orders = c.get_orders_by_path(config.account_id, 
+                                  max_results=10, 
+                                  from_entered_datetime=(datetime.datetime.today() - datetime.timedelta(days=5)), 
+                                  to_entered_datetime=(datetime.datetime.today() + datetime.timedelta(days=5))
+                                  ).json()
+    print(len(orders))
     return orders
 # getOrders()
 
+def getLastOrderStatus():
+    # start_date = datetime.datetime.now() - datetime.timedelta(10)
+    orders = c.get_orders_by_path(config.account_id, 
+                                  max_results=3, 
+                                  from_entered_datetime=(datetime.datetime.today() - datetime.timedelta(days=5)), 
+                                  to_entered_datetime=(datetime.datetime.today() + datetime.timedelta(days=5))
+                                  ).json()
+    print(orders[0]["status"])
+    return orders[0]["status"]
+
+# getLastOrderStatus()
 
 def cancelOrders(id):
     res = c.cancel_order(id, config.account_id)

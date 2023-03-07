@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react"
-import "./InteractiveBroker.css"
+import "./Broker.css"
 import { OptionsPrice } from "./OptionsPrice"
 import TextField from "@mui/material/TextField"
 
-export const InteractiveBroker = (props) => {
+export const Broker = (props) => {
   const {
     socket,
     symbol,
@@ -14,6 +14,7 @@ export const InteractiveBroker = (props) => {
     setDate,
     setType,
     setStrike,
+    sendAlert,
   } = props
   const [liveOptionsPrice, setLiveOptionsPrice] = React.useState("")
   const [highLiveOptionsPrice, setHighLiveOptionsPrice] = React.useState("")
@@ -81,6 +82,12 @@ export const InteractiveBroker = (props) => {
       }
     }
     const orderStatusUpdate = (message) => {
+      console.log(message)
+      if (message === "<Response [201 ]>") {
+        sendAlert("Order Sent Succesfully", "success")
+      } else {
+        sendAlert("Error Sending Order", "error")
+      }
       setOrderStatus(message)
       if (message.indexOf("20")) {
         setTimeout(() => {

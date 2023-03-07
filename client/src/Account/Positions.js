@@ -26,6 +26,7 @@ export const Positions = (props) => {
     setDate,
     setType,
     setStrike,
+    sendAlert,
   } = props
   const interval = React.useRef(null)
   const [liveOptionsPrice, setLiveOptionsPrice] = React.useState("")
@@ -119,7 +120,7 @@ export const Positions = (props) => {
           setQuantity(params.row.quantity)
           setMaxQuantity(params.row.quantity)
           let arr = params.row.symbol.match(/[a-zA-Z]+|[0-9]+/gm)
-          let symbol = arr[0],
+          let symbol = arr[0] === "SPXW" ? "$SPX.X" : arr[0],
             date = arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
             type = arr[2],
             strike = arr[3]
@@ -170,17 +171,19 @@ export const Positions = (props) => {
   const send = React.useCallback((e) => {
     e.preventDefault()
     setOpen(false)
+    // sendAlert("Close Order Sent", "success")
     socket.emit("sellPosition", currSymbol, quantity, askPrice)
-    socket.emit("getOrders")
+    socket.emit("getLastOrderStatus")
   })
 
   const refreshPrice = React.useCallback((e) => {
     let arr = currSymbol.match(/[a-zA-Z]+|[0-9]+/gm)
     console.log(arr)
-    let symbol = arr[0],
+    let symbol = arr[0] === "SPXW" ? "$SPX.X" : arr[0],
       date = arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
       type = arr[2],
       strike = arr[3]
+    console.log(symbol)
     socket.emit("getOptionsPriceUpdate", symbol, date, type, strike)
   })
 
@@ -235,13 +238,21 @@ export const Positions = (props) => {
     const optionsPriceUpdate = (message) => {
       setLiveOptionsPrice(message)
     }
+    const sendOrderStatusAlert = (status) => {
+      if (status === "REJECTED") {
+        sendAlert("Order has been Rejected", "error")
+      } else {
+        sendAlert("Order Placed", "success")
+      }
+    }
     socket.on("positions", getPositions)
     socket.on("liveOptionsUpdate", optionsPriceUpdate)
+    socket.on("lastOrderStatus", sendOrderStatusAlert)
     if (open) {
       handle = setInterval(() => {
         let arr = currSymbol.match(/[a-zA-Z]+|[0-9]+/gm)
         console.log(arr)
-        let symbol = arr[0],
+        let symbol = arr[0] === "SPXW" ? "$SPX.X" : arr[0],
           date = arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
           type = arr[2],
           strike = arr[3]
@@ -258,6 +269,7 @@ export const Positions = (props) => {
     return () => {
       socket.off("positions", getPositions)
       socket.off("liveOptionsUpdate", optionsPriceUpdate)
+      socket.off("lastOrderStatus", sendOrderStatusAlert)
       clearInterval(handle)
       clearInterval(interval)
     }
@@ -268,7 +280,7 @@ export const Positions = (props) => {
       {/* Rows of Positions */}
       {rows.length > 0 ? (
         <>
-          <div style={{ width: "100%" }}>
+          <div style={{ height: 325, width: "100%" }}>
             <DataGrid
               rows={rows}
               columns={columns}
@@ -321,7 +333,7 @@ export const Positions = (props) => {
             <div className="dialog-form">
               <label className="label-dialog">Symbol: </label>
               <label
-                readonly
+                readOnly
                 className="input"
                 type="text"
                 contentEditable={false}
@@ -344,7 +356,7 @@ export const Positions = (props) => {
             <div className="dialog-form ef-50">
               <label className="label-dialog">Average Price:</label>
               <label
-                readonly
+                readOnly
                 className="input"
                 type="text"
                 contentEditable={false}
@@ -355,7 +367,7 @@ export const Positions = (props) => {
             <div className="dialog-form ef-50">
               <label className="label-dialog">Current Price:</label>
               <label
-                readonly
+                readOnly
                 className="input-1"
                 type="text"
                 contentEditable={false}

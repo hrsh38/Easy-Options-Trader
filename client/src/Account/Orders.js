@@ -7,7 +7,7 @@ import { Button } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 
 export const Orders = (props) => {
-  const { socket } = props
+  const { socket, sendAlert } = props
   const [rows, setRows] = React.useState([])
   const [firstTime, setFirstTime] = React.useState(true)
   const [cancelOrderStatus, setCancelOrderStatus] = React.useState("")
@@ -17,7 +17,7 @@ export const Orders = (props) => {
 
   const [columns, setColumns] = React.useState([
     { field: "id", headerName: "ID", width: 130 },
-    { field: "description", headerName: "Description", width: 240 },
+    { field: "description", headerName: "Description", width: 340 },
     {
       field: "price",
       headerName: "Price",
@@ -64,6 +64,7 @@ export const Orders = (props) => {
         return (
           <>
             {params.row.status === "WORKING" ||
+            params.row.status === "ACCEPTED" ||
             params.row.status === "PENDING_ACTIVATION" ? (
               <Button
                 onClick={onClick}
@@ -89,6 +90,7 @@ export const Orders = (props) => {
         setRows(tempRows)
         setUpdate(!update)
       }
+      sendAlert("Order Cancelled", "info")
     },
     [update]
   )
@@ -136,17 +138,12 @@ export const Orders = (props) => {
     <>
       {rows.length > 0 ? (
         <>
-          <div style={{ width: "100%" }}>
+          <div style={{ height: 325, width: "100%" }}>
             <DataGrid
               rows={rows}
               columns={columns}
-              pageSize={6}
-              rowsPerPageOptions={[6]}
-              // checkboxSelection
-              disableSelectionOnClick
-              autoPageSize={true}
-              autoHeight
               hideFooter
+              disableSelectionOnClick
               sx={{
                 bgcolor: "black",
                 height: "-webkit-fill-available",
@@ -154,6 +151,7 @@ export const Orders = (props) => {
               }}
             />
           </div>
+
           <Button
             onClick={() => {
               socket.emit("getOrders")
