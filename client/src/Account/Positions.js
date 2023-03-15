@@ -367,7 +367,11 @@ export const Positions = (props) => {
                 type="text"
                 contentEditable={false}
                 onClick={() => {
-                  setAskPrice(liveOptionsPrice[0])
+                  setAskPrice(
+                    currSymbol.substring(0, 4) === "SPXW"
+                      ? Math.floor(liveOptionsPrice[0] * 10) / 10
+                      : liveOptionsPrice[0]
+                  )
                 }}
                 sx={{ cursor: "pointer" }}
                 style={{ cursor: "pointer" }}

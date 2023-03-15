@@ -17,6 +17,7 @@ export const OptionsPrice = (props) => {
   React.useEffect(() => {
     const interval = setInterval(() => {
       socket.emit("options", symbol, date, type, strike)
+      socket.emit("getOptionsData", symbol, date, type, strike)
     }, 3000)
 
     return () => clearInterval(interval) // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
@@ -39,7 +40,11 @@ export const OptionsPrice = (props) => {
       </div>
       <div
         onClick={() => {
-          setAskPrice(liveOptionsPrice)
+          setAskPrice(
+            symbol === "$SPX.X"
+              ? Math.floor(liveOptionsPrice * 10) / 10
+              : liveOptionsPrice
+          )
         }}
         className="options-price"
         style={{ cursor: "pointer" }}

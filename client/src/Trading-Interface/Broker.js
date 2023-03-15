@@ -26,6 +26,7 @@ export const Broker = (props) => {
   const [orderStatus, setOrderStatus] = React.useState("")
   const [firstTime, setFirstTime] = React.useState(true)
   const [weeklyOffsetInput, setWeeklyOffsetInput] = React.useState(0)
+  const [autoRoundDown, setAutoRoundDown] = React.useState(false)
   const [recentStocks, setRecentStocks] = React.useState({
     SPY: "SPY",
     "$SPX.X": "$SPX.X",
@@ -40,6 +41,7 @@ export const Broker = (props) => {
       e.preventDefault()
       //options: (symbol,date, type, strike)
       socket.emit("options", symbol, date, type, strike)
+      socket.emit("getOptionsData", symbol, date, type, strike)
       setOrderStatus("")
       setAskPrice(0)
     },
@@ -166,6 +168,7 @@ export const Broker = (props) => {
         const strike = Math.floor(data[s].lastPrice)
         setStrike(strike)
         socket.emit("options", s, date, type, strike)
+        socket.emit("getOptionsData", s, date, type, strike)
       })
   }
 
