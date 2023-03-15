@@ -284,13 +284,8 @@ export const Positions = (props) => {
             <DataGrid
               rows={rows}
               columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[3]}
-              // checkboxSelection
-              disableSelectionOnClick
-              autoPageSize={true}
-              autoHeight
               hideFooter
+              disableSelectionOnClick
               sx={{
                 bgcolor: "black",
                 height: "-webkit-fill-available",

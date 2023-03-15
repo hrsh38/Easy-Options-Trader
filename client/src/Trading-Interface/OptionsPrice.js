@@ -11,6 +11,7 @@ export const OptionsPrice = (props) => {
     setAskPrice,
     lowLiveOptionsPrice,
     highLiveOptionsPrice,
+    greeks,
   } = props
 
   React.useEffect(() => {
@@ -20,6 +21,9 @@ export const OptionsPrice = (props) => {
 
     return () => clearInterval(interval) // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   })
+  React.useEffect(() => {
+    socket.emit("getOptionsData", symbol, date, type, strike)
+  }, [])
   return (
     <>
       <div className="order-info">
@@ -51,6 +55,36 @@ export const OptionsPrice = (props) => {
       >
         <div>Low: {lowLiveOptionsPrice}</div>
         <div>High: {highLiveOptionsPrice}</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
+        <div>D: {greeks[0]}</div>
+        <div>V: {greeks[1]}</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
+        <div>T: {greeks[2]}</div>
+        <div>G: {greeks[3]}</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
+        <div>R: {greeks[4]}</div>
+        <div>IV: {greeks[5] + "%"}</div>
       </div>
     </>
   )

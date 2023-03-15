@@ -25,11 +25,11 @@ form {
 }
 
 .quote-form {
-  height: 50%;
+  height: 35%;
 }
 
 .quote-book {
-  height: 50%;
+  height: 65%;
   display: flex;
   width: 100%;
 }
@@ -68,7 +68,7 @@ form {
 .quote-right {
 }
 
-.send-button {
+.send-button-broker {
   color: white;
   background-color: green;
   height: 28.5px;
@@ -79,7 +79,7 @@ form {
   letter-spacing: 0.00938em;
   width: 82px;
 }
-.cancel-button {
+.cancel-button-broker {
   color: white;
   background-color: red;
   height: 28.5px;
@@ -111,4 +111,34 @@ input[type="number"]::-webkit-inner-spin-button {
 
 button:hover {
   cursor: pointer;
+}
+
+table,
+th,
+td {
+  border: 1px white solid;
+}
+.img-container {
+  position: relative;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 0;
+  /* top: -150px; */
+  top: 20px;
+  left: 0px;
+}
+
+.text-tag {
+  display: flex;
+  z-index: 2;
+  width: 0px;
+  height: 0px;
+  cursor: help;
+}
+
+.text-tag:hover .img-container {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s;
 }

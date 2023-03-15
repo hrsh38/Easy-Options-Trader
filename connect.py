@@ -55,9 +55,30 @@ def getOptionPrice(symbol,date, type, strike):
         return ["Invalid Input"]
     # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
     # print(response)
+def getOptionData(symbol,date, type, strike):
+    print(symbol,date, type, strike)
+    year = str(datetime.date.today().year)
 
-# print(getOptionPrice("$SPX.X", "03/06", "C", "4050"))
+    try:
+        callPut = c.Options.ContractType.CALL if type.upper() == "C" else c.Options.ContractType.PUT
 
+        start_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date();
+        end_date = datetime.datetime.strptime(date+"/"+year, '%m/%d/%Y').date() + datetime.timedelta(1);
+
+        
+        res = c.get_option_chain(symbol, contract_type=callPut, strike=int(strike), from_date=start_date, to_date=start_date).json()
+        # response = [nested_lookup('mark', res)[0], nested_lookup('highPrice', res)[0], nested_lookup('lowPrice', res)[0]]
+        strikePrice = "%0.1f" % float(strike)
+        response = nested_lookup(strikePrice, res)[0][0]
+        return response
+
+    except:
+        print(error)
+        return ["Invalid Input"]
+    # response = res["callExpDateMap"][next(iter(res["callExpDateMap"]))][str(strike)+".0"][0]["mark"]
+    # print(response)
+# print(getOptionData("$SPX.X", "3/15", "P", "3830"))
+# getOptionData("SPY", "3/15", "C", "392")
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
     if(symbol == "$SPX.X"):
         symbol = "SPXW"

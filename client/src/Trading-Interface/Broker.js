@@ -16,6 +16,7 @@ export const Broker = (props) => {
     setStrike,
     sendAlert,
   } = props
+  const [greeks, setGreeks] = React.useState([])
   const [liveOptionsPrice, setLiveOptionsPrice] = React.useState("")
   const [highLiveOptionsPrice, setHighLiveOptionsPrice] = React.useState("")
   const [lowLiveOptionsPrice, setLowLiveOptionsPrice] = React.useState("")
@@ -96,9 +97,23 @@ export const Broker = (props) => {
         setStop(true)
       }
     }
+
+    const optionsData = (message) => {
+      // console.log(message)
+      let greeksTemp = [
+        message.delta,
+        message.vega,
+        message.theta,
+        message.gamma,
+        message.rho,
+        message.volatility,
+      ]
+      // console.log(greeksTemp)
+      setGreeks(greeksTemp)
+    }
     socket.on("liveOptions", messageListener)
     socket.on("orderStatus", orderStatusUpdate)
-
+    socket.on("liveOptionsData", optionsData)
     // if (firstTime) {
     //   socket.emit("options", symbol, date, type, strike)
     //   setOrderStatus("")
@@ -106,6 +121,7 @@ export const Broker = (props) => {
     return () => {
       socket.off("liveOptions", messageListener)
       socket.off("orderStatus", orderStatusUpdate)
+      socket.off("liveOptionsData", optionsData)
     }
   }, [socket, symbol, date, type, strike])
 
@@ -394,6 +410,7 @@ export const Broker = (props) => {
                 setAskPrice={setAskPrice}
                 lowLiveOptionsPrice={lowLiveOptionsPrice}
                 highLiveOptionsPrice={highLiveOptionsPrice}
+                greeks={greeks}
               />
             </div>
             <div className="quote-right">
@@ -422,14 +439,14 @@ export const Broker = (props) => {
                   />
                 </label>
                 <button
-                  className="send-button"
+                  className="send-button-broker"
                   onClick={handleSendOrder}
                   // style={{ color: "white", background: "green" }}
                 >
                   SEND
                 </button>
                 <button
-                  className="cancel-button"
+                  className="cancel-button-broker"
                   onClick={() => {
                     setStop(true)
                     setQuantity(1)
@@ -447,6 +464,19 @@ export const Broker = (props) => {
                     currency: "USD",
                   }
                 )}
+              </div>
+              <div className="text-tag">
+                Help
+                <div className="img-container">
+                  <img
+                    src={
+                      "https://tradeoptionswithme.com/wp-content/uploads/2017/04/FullSizeRender-1-1.jpg"
+                    }
+                    width={300}
+                    height={150}
+                    alt="Greeks"
+                  ></img>
+                </div>
               </div>
               {/* <div>{orderStatus}</div> */}
             </div>

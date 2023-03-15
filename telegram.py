@@ -68,6 +68,15 @@ def getOptionsPrice(symbol,date, type, strike):
     socketio.emit("liveOptionsUpdate", ret)
     return ""
 
+@socketio.on('getOptionsData', namespace="/")
+@cross_origin()
+def getOptionsData(symbol,date, type, strike):
+    print(symbol,date, type, strike)
+    ret = connect.getOptionData(symbol, date, type, strike)
+    # print(ret)
+    socketio.emit("liveOptionsData", ret)
+    return ""
+
 @socketio.on('place_options_order', namespace="/")
 @cross_origin()
 def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
