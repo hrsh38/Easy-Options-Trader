@@ -85,6 +85,14 @@ def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
     print(str(ret))
     socketio.emit("orderStatus", str(ret))
     return ""
+@socketio.on('place_options_order_market', namespace="/")
+@cross_origin()
+def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity):
+    print(symbol, type, strike)
+    ret = connect.placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity)
+    print(str(ret))
+    socketio.emit("orderStatus", str(ret))
+    return ""
 
 @socketio.on('sellPosition', namespace="/")
 @cross_origin()
@@ -92,6 +100,14 @@ def sellToClosePosition(symbol, quantity, ask_price):
     print(symbol, quantity, ask_price)
     ret = connect.sellToClosePosition(symbol, quantity, ask_price)
     socketio.emit("sellPositionStatus", str(ret))
+    return ""
+
+@socketio.on('sellMarketPosition', namespace="/")
+@cross_origin()
+def sellMarketPosition(symbol, quantity):
+    print(symbol, quantity)
+    ret = connect.sellMarketPosition(symbol, quantity)
+    socketio.emit("sellPositionStatusMarket", str(ret))
     return ""
 
 @socketio.on('getPositions', namespace="/")

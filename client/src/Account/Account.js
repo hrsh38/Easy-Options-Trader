@@ -75,6 +75,7 @@ export const Account = (props) => {
   const theme = useTheme()
   const [value, setValue] = React.useState(1)
   const [firstTime, setFirstTime] = React.useState(true)
+  const [livePriceUpdates, setLivePriceUpdates] = React.useState(false)
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -138,6 +139,8 @@ export const Account = (props) => {
             setType={setType}
             setStrike={setStrike}
             sendAlert={sendAlert}
+            livePriceUpdates={livePriceUpdates}
+            setLivePriceUpdates={setLivePriceUpdates}
           />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>

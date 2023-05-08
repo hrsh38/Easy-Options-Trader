@@ -27,6 +27,8 @@ export const Positions = (props) => {
     setType,
     setStrike,
     sendAlert,
+    livePriceUpdates,
+    setLivePriceUpdates,
   } = props
   const interval = React.useRef(null)
   const [liveOptionsPrice, setLiveOptionsPrice] = React.useState("")
@@ -140,13 +142,30 @@ export const Positions = (props) => {
     },
     {
       field: "stopLoss",
-      headerName: "Stop Loss",
+      headerName: "Market",
       editable: false,
       width: 82,
       sortable: false,
       renderCell: (params) => {
         const onClick = (e) => {
           e.stopPropagation() // don't select this row after clicking
+          e.preventDefault()
+          setOpen(false)
+          setCurrSymbol(params.row.symbol)
+          // sendAlert("Close Order Sent", "success")
+          console.log(params.row.symbol, params.row.quantity)
+          socket.emit(
+            "sellMarketPosition",
+            params.row.symbol,
+            params.row.quantity
+          )
+          socket.emit("getLastOrderStatus")
+          setTimeout(() => {
+            socket.emit("getPositions")
+          }, 3000)
+          setTimeout(() => {
+            socket.emit("getPositions")
+          }, 5000)
         }
 
         return (
@@ -154,7 +173,7 @@ export const Positions = (props) => {
             onClick={onClick}
             style={{ backgroundColor: "red", color: "white", width: "50px" }}
           >
-            Limit
+            Market
           </Button>
         )
       },
@@ -172,6 +191,7 @@ export const Positions = (props) => {
     e.preventDefault()
     setOpen(false)
     // sendAlert("Close Order Sent", "success")
+    console.log(currSymbol)
     socket.emit("sellPosition", currSymbol, quantity, askPrice)
     socket.emit("getLastOrderStatus")
   })
@@ -234,6 +254,9 @@ export const Positions = (props) => {
         }
       )
       setRows(tempRows)
+      return () => {
+        clearInterval(localStorage.getItem("intervalIdLivePrice"))
+      }
     }
     const optionsPriceUpdate = (message) => {
       setLiveOptionsPrice(message)
@@ -293,13 +316,36 @@ export const Positions = (props) => {
               }}
             />
           </div>
-          <Button
-            onClick={() => {
-              socket.emit("getPositions")
-            }}
-          >
-            Refresh
-          </Button>
+          <div className="bottom-row">
+            <Button
+              onClick={() => {
+                socket.emit("getPositions")
+              }}
+            >
+              Refresh
+            </Button>
+            <div style={{ alignItems: "center", display: "flex" }}>
+              Live:{"  "}
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={livePriceUpdates}
+                  onChange={(e) => {
+                    setLivePriceUpdates(!livePriceUpdates)
+                    if (e.target.checked) {
+                      let h = setInterval(
+                        () => socket.emit("getPositions"),
+                        1000
+                      )
+                      localStorage.setItem("intervalIdLivePrice", h)
+                    } else
+                      clearInterval(localStorage.getItem("intervalIdLivePrice"))
+                  }}
+                />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          </div>
         </>
       ) : (
         <> No positions</>

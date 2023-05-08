@@ -95,7 +95,7 @@ const Apps = () => {
         .then((res) => {
           setPost(res.data)
           console.log(res.data)
-          messageParse(res.data.messages[res.data.messages.length - 1])
+          // messageParse(res.data.messages[res.data.messages.length - 1])
         })
         .catch((err) => {
           console.log(err)

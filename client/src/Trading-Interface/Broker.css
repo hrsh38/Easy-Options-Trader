@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: column;
 }
+.top-section {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
 label {
   display: inline-block;
   margin-right: 10px;
@@ -15,6 +20,10 @@ form {
 
 .quote-button {
   margin-top: 18px;
+}
+.watchlist-button {
+  margin-top: 18px;
+  width: fit-content;
 }
 
 .recent-stocks {
@@ -80,6 +89,8 @@ form {
   width: 82px;
 }
 .cancel-button-broker {
+  margin-right: 5px;
+
   color: white;
   background-color: red;
   height: 28.5px;
@@ -89,10 +100,23 @@ form {
   letter-spacing: 0.00938em;
   width: 82px;
 }
+.add-to-watchlist {
+  margin-top: 5px;
+
+  color: white;
+  background-color: rgb(31, 95, 135);
+  height: 28.5px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0.00938em;
+  width: 100%;
+}
 
 .get-quote-button {
   background: rgba(0, 153, 229, 0.9);
   color: white;
+  width: 138px;
 }
 
 input {
@@ -113,11 +137,11 @@ button:hover {
   cursor: pointer;
 }
 
-table,
+/* table,
 th,
 td {
   border: 1px white solid;
-}
+} */
 .img-container {
   position: relative;
   visibility: hidden;

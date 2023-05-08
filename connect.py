@@ -6,7 +6,7 @@ import config
 import datetime
 import sys
 from nested_lookup import nested_lookup
-from tda.orders.options import OptionSymbol, option_buy_to_open_limit, option_sell_to_close_limit
+from tda.orders.options import OptionSymbol, option_buy_to_open_limit, option_sell_to_close_limit, option_buy_to_open_market, option_sell_to_close_market
 from tda.orders.common import Duration, Session
 from tda.client import Client
 
@@ -102,6 +102,26 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
 
 # placeOptionsOrder("SPXW", "3", "6", "P", "4050", "1", "1.00")
 # symbol, date_month, date_day, type, strike, quantity, ask_price
+def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity):
+    if(symbol == "$SPX.X"):
+        symbol = "SPXW"
+    try:
+        todays_date = datetime.date.today()
+        newSymbol = OptionSymbol(
+        symbol, datetime.date(year=todays_date.year, month=int(date_month), day=int(date_day)), type, strike).build()
+        # h = c.get_option_chain(newSymbol).json()
+        # print(h)
+        order = c.place_order(config.account_id,
+                    option_buy_to_open_market(newSymbol, int(quantity))
+                    .set_duration(Duration.GOOD_TILL_CANCEL)
+                    .set_session(Session.NORMAL)
+                    .build())
+        print(order)
+    except error:
+        # print(order)
+        print(error)
+    return order
+    # print(h)
 
 def getOrders():
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
@@ -160,6 +180,11 @@ def sellToClosePosition(symbol, quantity, askPrice):
     print(close)
     return close
 
+def sellMarketPosition(symbol, quantity):
+    print(symbol, quantity)
+    close = c.place_order(config.account_id, option_sell_to_close_market(symbol,int(quantity)))
+    print(close)
+    return close
 # sellToClosePosition('BBBY_061722C12', 1, '0.05')
 
 def getAccountInfo():
