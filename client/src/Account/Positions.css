@@ -176,3 +176,16 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.market-q-button {
+  background-color: red;
+  color: white;
+  width: 50px;
+  margin: 2px 5px;
+  border-radius: 5px;
+  box-shadow: 0;
+  background: transparent;
+  color: white;
+  border-color: red;
+  border-style: solid;
+}

@@ -52,11 +52,14 @@ export const Broker = (props) => {
   const handleWatchListEntry = () => {
     let tempArr = watchListArr
 
-    tempArr.push([symbol, date, type, strike, liveOptionsPrice, strike])
+    tempArr.push([symbol, date, type, strike])
     console.log(tempArr)
     setStop(true)
     setQuantity(1)
     setWatchListArr(tempArr)
+    console.log(tempArr.toString())
+    let localObj = { watchList: tempArr }
+    localStorage.setItem("watchListArr", JSON.stringify(localObj))
   }
   const handleQuoteFromWatchList = (watchLisItem) => {
     // let watchLisItem = ["MU", "5/12", "C", 62]

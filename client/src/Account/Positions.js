@@ -178,6 +178,87 @@ export const Positions = (props) => {
         )
       },
     },
+    {
+      field: "marketQ",
+      headerName: "MarketQ",
+      editable: false,
+      width: 150,
+      sortable: false,
+      renderCell: (params) => {
+        const onClick = (e, quantity) => {
+          e.stopPropagation() // don't select this row after clicking
+          e.preventDefault()
+          setOpen(false)
+          setCurrSymbol(params.row.symbol)
+          // sendAlert("Close Order Sent", "success")
+          console.log(params.row.symbol, params.row.quantity)
+          let q
+          switch (quantity) {
+            case "one":
+              q = 1
+              break
+            case "two":
+              if (params.row.quantity > 1) q = 2
+              else q = 1
+              break
+            case "half":
+              q = Math.ceil(params.row.quantity / 2)
+              break
+            case "fourth":
+              q = Math.ceil(params.row.quantity / 4)
+              break
+
+            default:
+              break
+          }
+          console.log(q)
+          socket.emit("sellMarketPosition", params.row.symbol, q)
+          socket.emit("getLastOrderStatus")
+          setTimeout(() => {
+            socket.emit("getPositions")
+          }, 3000)
+          setTimeout(() => {
+            socket.emit("getPositions")
+          }, 5000)
+        }
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              marginTop: "2px",
+              justifyContent: "center",
+            }}
+          >
+            <button
+              onClick={(e) => onClick(e, "one")}
+              className="market-q-button"
+            >
+              1
+            </button>
+            <button
+              onClick={(e) => onClick(e, "two")}
+              className="market-q-button"
+            >
+              2
+            </button>
+            <button
+              onClick={(e) => onClick(e, "half")}
+              className="market-q-button"
+            >
+              1/2
+            </button>
+            <button
+              onClick={(e) => onClick(e, "fourth")}
+              className="market-q-button"
+            >
+              1/4
+            </button>
+          </div>
+        )
+      },
+    },
   ])
   const [rows, setRows] = React.useState([])
   const [firstTime, setFirstTime] = React.useState(true)
@@ -231,7 +312,16 @@ export const Positions = (props) => {
                 posData.instrument.putCall.substring(0, 1),
               quantity: posData.longQuantity,
               value: "$" + posData.marketValue,
-              profitLoss: posData.currentDayProfitLossPercentage + "%",
+              profitLoss:
+                parseFloat(
+                  (parseFloat(
+                    parseFloat(
+                      posData.marketValue / (100 * posData.longQuantity)
+                    ).toFixed(3) - parseFloat(posData.averagePrice).toFixed(3)
+                  ) /
+                    parseFloat(posData.averagePrice).toFixed(3)) *
+                    100
+                ).toFixed(1) + "%",
               close: posData,
               symbol: posData.instrument.symbol,
               averagePrice: parseFloat(posData.averagePrice).toFixed(3),

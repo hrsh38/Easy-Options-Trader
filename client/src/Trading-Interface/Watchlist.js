@@ -2,7 +2,7 @@ import React from "react"
 import "./Watchlist.css"
 import { StockPrice } from "./StockPrice"
 import { WLOptionsPrice } from "./WLOptionsPrice"
-import data from "./watchlist.json"
+import dataB from "./watchlist.json"
 
 export const Watchlist = (props) => {
   const { watchListArr, setWatchListArr, handleQuoteFromWatchList } = props
@@ -12,6 +12,20 @@ export const Watchlist = (props) => {
   const [live, setLive] = React.useState(false)
   const [intervalVar, setIntveralVar] = React.useState()
   const getOptionPrice = (watchListItem) => {}
+  const [inputValue, setInputValue] = React.useState("")
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    // Do something with the submitted value
+    console.log("Submitted value:", inputValue)
+    // Reset the input field
+    localStorage.setItem("i", inputValue)
+    setInputValue("")
+  }
 
   React.useEffect(() => {
     return () => {}
@@ -19,6 +33,16 @@ export const Watchlist = (props) => {
 
   React.useEffect(() => {
     // console.log(data)
+    let data = { watchList: [] }
+    let dataLocal = localStorage.getItem("watchListArr")
+    console.log(dataLocal)
+    if (dataLocal.length > 0) {
+      data = JSON.parse(dataLocal)
+      console.log(data.watchList)
+      console.log(dataB.watchList)
+    } else {
+      console.log("nothing")
+    }
     setWatchListArr(data.watchList)
     if (live) {
       const interval = setInterval(() => {
@@ -40,6 +64,20 @@ export const Watchlist = (props) => {
             <th>SP</th>
           </tr>
           {watchListArr.map((watchlistItem, key) => {
+            let clickFunc = () => {
+              let arr = watchListArr
+              arr.splice(key, 1)
+              setWatchListArr(arr)
+              setUpdates(!updates)
+              localStorage.setItem(
+                "watchListArr",
+                JSON.stringify({ watchList: arr })
+              )
+              {
+                /* watchListArr
+              console.log(key) */
+              }
+            }
             return (
               <tr className="watchlist-item" key={key}>
                 <td
@@ -67,6 +105,9 @@ export const Watchlist = (props) => {
                 </td>
                 <td>
                   <StockPrice symbol={watchlistItem[0]} updates={updates} />
+                </td>
+                <td>
+                  <button onClick={clickFunc}>X</button>
                 </td>
               </tr>
             )
@@ -98,6 +139,22 @@ export const Watchlist = (props) => {
           </label>
         </div>
       </div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Enter something"
+        />
+        <button type="submit">Set</button>
+      </form>
+      <button
+        onClick={() => {
+          console.log(localStorage.getItem("i"))
+        }}
+      >
+        Get
+      </button>
     </div>
   )
 }
