@@ -15,7 +15,7 @@ module.exports = {
         options: { presets: ["@babel/env"] },
       },
       {
-        test: /\.css$/, //checks for .css files
+        test: /\.(css|scss)$/, //checks for .css files
         use: ["style-loader", "css-loader"],
       },
     ],

@@ -1,0 +1,124 @@
+.settings {
+  display: flex;
+  height: 500px;
+  width: 500px;
+  background-color: #222;
+  color: #fff;
+}
+
+.sidebar {
+  width: 125px;
+  background-color: #333;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 20px;
+}
+
+.sidebar-menu li {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.content h2 {
+  margin-top: 0;
+}
+
+.save-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+}
+
+.close-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f44336;
+  color: white;
+}
+
+.button-container {
+  position: absolute;
+  bottom: 10px;
+  right: 0px;
+  display: flex;
+  gap: 10px;
+}
+
+.content {
+  position: relative;
+}
+
+.underline {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.box-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.box {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Dark mode styles */
+
+.settings.dark-mode {
+  background-color: #333;
+  color: #fff;
+}
+
+.sidebar.dark-mode {
+  background-color: #222;
+}
+
+.content.dark-mode {
+  background-color: #111;
+}
+
+.save-button.dark-mode {
+  background-color: #4caf50;
+  color: white;
+}
+
+.close-button.dark-mode {
+  background-color: #f44336;
+  color: white;
+}
+
+.box.dark-mode {
+  border-color: #ccc;
+}
+
+.box:hover {
+  background-color: #d46262;
+}
+
+.box:active {
+  background-color: #d0d0d0;
+}

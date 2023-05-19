@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react"
 import "./Broker.css"
 import { OptionsPrice } from "./OptionsPrice"
-import TextField from "@mui/material/TextField"
 import { Watchlist } from "./Watchlist"
-
+import { Dialog, IconButton } from "@mui/material"
+import SettingsIcon from "@mui/icons-material/Settings"
+import { Settings } from "./Settings"
 export const Broker = (props) => {
   const {
     socket,
@@ -27,16 +28,22 @@ export const Broker = (props) => {
   const [orderStatus, setOrderStatus] = React.useState("")
   const [firstTime, setFirstTime] = React.useState(true)
   const [weeklyOffsetInput, setWeeklyOffsetInput] = React.useState(0)
-  const [recentStocks, setRecentStocks] = React.useState({
-    SPY: "SPY",
-    "$SPX.X": "$SPX.X",
-    QQQ: "QQQ",
-    AAPL: "AAPL",
-    TSLA: "TSLA",
-    META: "META",
-    AMZN: "AMZN",
-  })
+  const [recentStocks, setRecentStocks] = React.useState({})
   const [currentOrderInfo, setCurrentOrderInfo] = React.useState("")
+  const [open, setOpen] = useState(false)
+
+  //For Open
+  useEffect(() => {
+    let recent = localStorage.getItem("recentStocks")
+    setRecentStocks(JSON.parse(recent))
+  }, [open])
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   const handleClick = useCallback(
     (e) => {
       e.preventDefault()
@@ -128,6 +135,25 @@ export const Broker = (props) => {
     [symbol, date, type, strike, quantity]
   )
   useEffect(() => {
+    if (firstTime) {
+      let recent = localStorage.getItem("recentStocks")
+      if (recent === null) {
+        let stockList = {
+          SPY: "SPY",
+          "$SPX.X": "$SPX.X",
+          QQQ: "QQQ",
+          AAPL: "AAPL",
+          TSLA: "TSLA",
+          META: "META",
+          AMZN: "AMZN",
+        }
+        localStorage.setItem("recentStock", JSON.stringify(stockList))
+        setRecentStocks(stockList)
+      } else {
+        setRecentStocks(JSON.parse(recent))
+      }
+      setFirstTime(false)
+    }
     const messageListener = (message) => {
       setLiveOptionsPrice(message[0])
       if (message !== "Invalid Input") {
@@ -135,7 +161,15 @@ export const Broker = (props) => {
         setHighLiveOptionsPrice(message[1])
         setLowLiveOptionsPrice(message[2])
         setStop(false)
+
         if (!recentStocks.hasOwnProperty(symbol)) {
+          localStorage.setItem(
+            "recentStocks",
+            JSON.stringify({
+              ...recentStocks,
+              [symbol]: symbol,
+            })
+          )
           setRecentStocks((prevState) => ({ ...prevState, [symbol]: symbol }))
         }
         setCurrentOrderInfo(symbol + "  " + date + "  $" + strike + "" + type)
@@ -176,10 +210,7 @@ export const Broker = (props) => {
     socket.on("liveOptions", messageListener)
     socket.on("orderStatus", orderStatusUpdate)
     socket.on("liveOptionsData", optionsData)
-    // if (firstTime) {
-    //   socket.emit("options", symbol, date, type, strike)
-    //   setOrderStatus("")
-    // }
+
     return () => {
       socket.off("liveOptions", messageListener)
       socket.off("orderStatus", orderStatusUpdate)
@@ -571,6 +602,20 @@ export const Broker = (props) => {
             handleQuoteFromWatchList={handleQuoteFromWatchList}
             setWatchListArr={setWatchListArr}
           ></Watchlist>
+        </div>
+        {/* Settings Icon  */}
+        <div className="settings-icon">
+          <IconButton onClick={handleOpen} style={{ color: "#FFFFFF" }}>
+            <SettingsIcon />
+          </IconButton>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth="md"
+            className="dialog"
+          >
+            <Settings setOpen={setOpen} />
+          </Dialog>
         </div>
       </div>
     </>
