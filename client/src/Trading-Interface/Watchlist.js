@@ -139,7 +139,7 @@ export const Watchlist = (props) => {
           </label>
         </div>
       </div>
-      <form onSubmit={handleSubmit}>
+      {/* <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={inputValue}
@@ -154,7 +154,7 @@ export const Watchlist = (props) => {
         }}
       >
         Get
-      </button>
+      </button> */}
     </div>
   )
 }
