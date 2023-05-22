@@ -1,0 +1,3 @@
+    with webdriver.Chrome(executable_path='/Users/harsh/Desktop/TradeAssist/chromedriver') as driver:
+
+    with webdriver.Chrome(executable_path=r'C:\Users\harsh\Desktop\TradeAssist/chromedriver') as driver:

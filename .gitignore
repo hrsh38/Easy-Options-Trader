@@ -6,4 +6,5 @@ Test.session-journal
 config.py
 secret.json
 token
-
+chromedriver
+.DS_Store
