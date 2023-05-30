@@ -36,7 +36,7 @@ export const Watchlist = (props) => {
     let data = { watchList: [] }
     let dataLocal = localStorage.getItem("watchListArr")
     console.log(dataLocal)
-    if (dataLocal.length > 0) {
+    if (dataLocal !== null) {
       data = JSON.parse(dataLocal)
       console.log(data.watchList)
       console.log(dataB.watchList)

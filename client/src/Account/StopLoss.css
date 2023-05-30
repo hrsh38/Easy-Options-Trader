@@ -1,0 +1,55 @@
+.root {
+  background-color: #333;
+  padding: 10px;
+}
+
+.tabs {
+  /* display: flex; */
+  /* justify-content: center; */
+  padding: 5px;
+  border: white solid 1px;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.tab {
+  color: #fff;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.tab:hover {
+  opacity: 1;
+}
+
+.indicator {
+  background-color: #fff;
+}
+
+
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .orders-table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  .orders-table th,
+  .orders-table td {
+    padding: 8px;
+    text-align: left;
+  }
+
+  .cancel_row{
+    width: 25px;
+  }
+
+  .no-orders{
+    display: flex;
+    padding: 10px;
+    /* justify-content: center; */
+  }

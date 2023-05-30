@@ -14,6 +14,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import { OptionsPrice } from "./OptionsPrice"
 import RefreshIcon from "@mui/icons-material/Refresh"
+import { StopLoss } from "./StopLoss"
 
 export const Positions = (props) => {
   const {
@@ -48,14 +49,14 @@ export const Positions = (props) => {
       headerName: "Date",
       width: 90,
       editable: false,
-      sortable: false,
+      sortable: true,
     },
     {
       field: "ticker",
       headerName: "Ticker",
       width: 90,
       editable: false,
-      sortable: false,
+      sortable: true,
     },
     {
       field: "type",
@@ -77,7 +78,7 @@ export const Positions = (props) => {
       // type: "number",
       // width: 110,
       editable: false,
-      sortable: false,
+      sortable: true,
     },
     {
       field: "profitLoss",
@@ -104,7 +105,7 @@ export const Positions = (props) => {
       headerName: "P/L($)",
       width: 110,
       editable: false,
-      sortable: false,
+      sortable: true,
     },
     {
       field: "close",
@@ -141,7 +142,7 @@ export const Positions = (props) => {
       },
     },
     {
-      field: "stopLoss",
+      field: "market",
       headerName: "Market",
       editable: false,
       width: 82,
@@ -256,6 +257,45 @@ export const Positions = (props) => {
               1/4
             </button>
           </div>
+        )
+      },
+    },
+    {
+      field: "stopLossLimit",
+      headerName: "Stop Loss",
+      editable: false,
+      width: 100,
+      sortable: false,
+      renderCell: (params) => {
+        const onClick = (e) => {
+          setCurrSymbol(params.row.symbol)
+          socket.emit("getOrdersForStop", params.row.symbol)
+          // sendAlert("Close Order Sent", "success")
+          console.log(params.row.symbol, params.row.quantity)
+          // socket.emit(
+          //   "sellMarketPosition",
+          //   params.row.symbol,
+          //   params.row.quantity
+          // )
+          // socket.emit("getLastOrderStatus")
+          // setTimeout(() => {
+          //   socket.emit("getPositions")
+          // }, 3000)
+          // setTimeout(() => {
+          //   socket.emit("getPositions")
+          // }, 5000)
+        }
+
+        return (
+          <>
+            <StopLoss
+              currSymbol={params.row.symbol}
+              quantity={params.row.quantity}
+              onClick={onClick}
+              averagePrice={params.row.averagePrice}
+              socket={socket}
+            ></StopLoss>
+          </>
         )
       },
     },
@@ -415,7 +455,7 @@ export const Positions = (props) => {
               Refresh
             </Button>
             <div style={{ alignItems: "center", display: "flex" }}>
-              Live:{"  "}
+              Live:
               <label className="switch">
                 <input
                   type="checkbox"

@@ -103,6 +103,13 @@ export const Orders = (props) => {
       setOrders(orders)
       console.log(orders)
       orders.forEach((order, index) => {
+        console.log(order.price)
+        if (order.price === undefined) {
+          order.price = order.stopPrice
+          if (order.stopPrice == undefined) {
+            order.price = 0
+          }
+        }
         tempRows.push({
           id: order.orderId,
           description: order.orderLegCollection[0].instrument.description,
