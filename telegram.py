@@ -139,6 +139,15 @@ def getOrdersForStop(symbol):
     return ""
 
 
+@socketio.on('cancelOrdersFromId', namespace="/")
+@cross_origin()
+def cancelOrdersFromId(symbol):
+    print("orders")
+    ret = connect.cancelOrdersFromId(symbol)
+    socketio.emit("status", ret)
+    return ""
+
+
 @socketio.on('getOrders', namespace="/")
 @cross_origin()
 def getOrders():

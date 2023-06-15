@@ -15,6 +15,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import { OptionsPrice } from "./OptionsPrice"
 import RefreshIcon from "@mui/icons-material/Refresh"
 import { StopLoss } from "./StopLoss"
+import { CancelAllOrders } from "./CancelAllOrder"
 
 export const Positions = (props) => {
   const {
@@ -295,6 +296,25 @@ export const Positions = (props) => {
               averagePrice={params.row.averagePrice}
               socket={socket}
             ></StopLoss>
+          </>
+        )
+      },
+    },
+    {
+      field: "cancelAllOrders",
+      headerName: "Cancel Orders",
+      editable: false,
+      width: 110,
+      sortable: false,
+      renderCell: (params) => {
+        const handleClick = (e) => {
+          socket.emit("cancelOrdersFromId", params.row.symbol)
+        }
+        return (
+          <>
+            <Button variant="outlined" color="error" onClick={handleClick}>
+              Cancel
+            </Button>
           </>
         )
       },

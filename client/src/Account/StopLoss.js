@@ -30,8 +30,15 @@ export const StopLoss = (props) => {
   }
 
   const handleClickOpen = () => {
+    socket.emit("getOrdersForStop", currSymbol)
     setOpen(true)
-    onClick()
+    let arr = currSymbol.match(/[a-zA-Z]+|[0-9]+/gm)
+    console.log(arr)
+    let symbol = arr[0] === "SPXW" ? "$SPX.X" : arr[0],
+      date = arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
+      type = arr[2],
+      strike = arr[3]
+    socket.emit("getOptionsPriceUpdate", symbol, date, type, strike)
   }
 
   const handleClose = () => {
@@ -55,7 +62,7 @@ export const StopLoss = (props) => {
 
     const getOrders = (orders) => {
       let tempRows = []
-      console.log(orders)
+      // console.log(orders)
       orders.forEach((order, index) => {
         tempRows.push({
           id: order.orderId,
@@ -67,7 +74,7 @@ export const StopLoss = (props) => {
         })
       })
 
-      console.log(tempRows)
+      // console.log(tempRows)
       setOrders(tempRows)
       // setRows(tempRows)
       // setPositions(JSON.parse(pos)[0]["securitiesAccount"]["positions"])
@@ -82,7 +89,7 @@ export const StopLoss = (props) => {
     if (firstTime) {
       socket.emit("getOrdersForStop", currSymbol)
       let arr = currSymbol.match(/[a-zA-Z]+|[0-9]+/gm)
-      console.log(arr)
+      // console.log(arr)
       let symbol = arr[0] === "SPXW" ? "$SPX.X" : arr[0],
         date = arr[1].substring(0, 2) + "/" + arr[1].substring(2, 4),
         type = arr[2],

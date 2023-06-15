@@ -287,3 +287,23 @@ def getOrdersForStop(symbol):
 
 # getOrdersForStop("TSLA_060923C225")
 # getOrdersForStop("AMZN_052623C118")
+
+def cancelOrdersFromId(symbol):
+    print(symbol)
+    # start_date = datetime.datetime.now() - datetime.timedelta(10)
+    orders = c.get_orders_by_path(config.account_id,
+                                  max_results=50,
+                                  from_entered_datetime=(
+                                      datetime.datetime.today() - datetime.timedelta(days=5)),
+                                  to_entered_datetime=(
+                                      datetime.datetime.today() + datetime.timedelta(days=5))
+                                  ).json()
+
+    # print(orders)
+    symbol_orders = [order for order in orders if order['orderLegCollection']
+                     [0]['instrument']['symbol'] == symbol and order['status'] != 'FILLED' and order['status'] != 'CANCELED' and order['status'] != 'REJECTED']
+    # print(len(orders))
+    # print(symbol_orders)
+    for orders in symbol_orders:
+        cancelOrders(orders['orderId'])
+    return symbol_orders
