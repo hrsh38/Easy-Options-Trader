@@ -1,3 +1,8 @@
+"""
+Testing environment for options trading strategies.
+Provides functionality for analyzing option chains and finding potential trades.
+"""
+
 from distutils.log import error
 import requests
 from tda import auth, client
@@ -10,6 +15,7 @@ from tda.orders.options import OptionSymbol, option_buy_to_open_limit, option_se
 from tda.orders.common import Duration, Session
 from tda.client import Client
 
+# Initialize TD Ameritrade client with authentication
 try:
     c = auth.client_from_token_file(config.token_path, config.api_key)
 except FileNotFoundError:
@@ -17,11 +23,13 @@ except FileNotFoundError:
     with webdriver.Chrome(executable_path=r'C:\Users\harsh\Desktop\TradeAssist/chromedriver') as driver:
         c = auth.client_from_login_flow(
             driver, config.api_key, config.redirect_uri, config.token_path)
-
         c.get_order()
 
-
 def getOptionData(symbol, date, type, strike):
+    """
+    Retrieves comprehensive option contract data including Greeks.
+    Returns strike price, type, mark price, and all option Greeks.
+    """
     # print(symbol, date, type, strike)
     year = str(datetime.date.today().year)
 
@@ -64,12 +72,13 @@ date = "3/20"
 # currentPrice = 3915
 # type = "P"
 
+# Collect option chain data
 data = []
 for i in range(-100, 100, 5):
     if (i == 0):
         type = "C"
-print(3920+i, type)
-data.append(getOptionData(ticker, date, type, 3920+i))
+    print(3920+i, type)
+    data.append(getOptionData(ticker, date, type, 3920+i))
 
 
 # print(data[0])
@@ -77,9 +86,11 @@ data.append(getOptionData(ticker, date, type, 3920+i))
 left = 0
 right = 39
 
+# Find potential puts and calls based on delta
 potentialPuts = []
 potentialCalls = []
 
+# Analyze option chain for potential trades
 while (left < right):
     diffLeft = abs(3-data[left][2])
     diffRight = abs(3-data[right][2])

@@ -1,3 +1,7 @@
+"""
+WebSocket server for real-time options trading interface.
+Handles communication between frontend and TD Ameritrade API.
+"""
 
 from distutils.log import error
 from io import BytesIO
@@ -24,18 +28,24 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @socketio.on('message')
 @cross_origin()
 def handle_message():
+    """Handles general WebSocket messages."""
     print("message")
 
 
 @socketio.on('join', namespace="/")
 @cross_origin()
 def handle_join():
+    """Handles client connection to WebSocket."""
     return ""
 
 
 @socketio.on('options', namespace="/")
 @cross_origin()
 def getOptionsPrice(symbol, date, type, strike):
+    """
+    Retrieves and broadcasts option price updates.
+    Emits live option prices to connected clients.
+    """
     print(symbol, date, type, strike)
     ret = connect.getOptionPrice(symbol, date, type, strike)
     socketio.emit("liveOptions", ret)
@@ -45,6 +55,10 @@ def getOptionsPrice(symbol, date, type, strike):
 @socketio.on('getOptionsPriceUpdate', namespace="/")
 @cross_origin()
 def getOptionsPrice(symbol, date, type, strike):
+    """
+    Retrieves and broadcasts real-time option price updates.
+    Emits live option price updates to connected clients.
+    """
     print(symbol, date, type, strike)
     ret = connect.getOptionPrice(symbol, date, type, strike)
     socketio.emit("liveOptionsUpdate", ret)
@@ -54,6 +68,10 @@ def getOptionsPrice(symbol, date, type, strike):
 @socketio.on('getOptionsData', namespace="/")
 @cross_origin()
 def getOptionsData(symbol, date, type, strike):
+    """
+    Retrieves and broadcasts detailed option contract data.
+    Emits comprehensive option data to connected clients.
+    """
     print(symbol, date, type, strike)
     ret = connect.getOptionData(symbol, date, type, strike)
     # print(ret)
@@ -64,6 +82,10 @@ def getOptionsData(symbol, date, type, strike):
 @socketio.on('place_options_order', namespace="/")
 @cross_origin()
 def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
+    """
+    Places a limit order for options and broadcasts status.
+    Emits order status to connected clients.
+    """
     # print(symbol,date, type, strike)
     ret = connect.placeOptionsOrder(
         symbol, date_month, date_day, type, strike, quantity, ask_price)
@@ -75,6 +97,10 @@ def placeOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
 @socketio.on('place_options_order_market', namespace="/")
 @cross_origin()
 def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity):
+    """
+    Places a market order for options and broadcasts status.
+    Emits order status to connected clients.
+    """
     print(symbol, type, strike)
     ret = connect.placeOptionsOrderMarket(
         symbol, date_month, date_day, type, strike, quantity)
@@ -86,6 +112,10 @@ def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity
 @socketio.on('sellPosition', namespace="/")
 @cross_origin()
 def sellToClosePosition(symbol, quantity, ask_price):
+    """
+    Places a limit order to sell position and broadcasts status.
+    Emits sell order status to connected clients.
+    """
     print(symbol, quantity, ask_price)
     ret = connect.sellToClosePosition(symbol, quantity, ask_price)
     socketio.emit("sellPositionStatus", str(ret))
@@ -95,6 +125,10 @@ def sellToClosePosition(symbol, quantity, ask_price):
 @socketio.on('sellMarketPosition', namespace="/")
 @cross_origin()
 def sellMarketPosition(symbol, quantity):
+    """
+    Places a market order to sell position and broadcasts status.
+    Emits sell order status to connected clients.
+    """
     print(symbol, quantity)
     ret = connect.sellMarketPosition(symbol, quantity)
     socketio.emit("sellPositionStatusMarket", str(ret))
@@ -104,6 +138,10 @@ def sellMarketPosition(symbol, quantity):
 @socketio.on('placeStopLimitOrder', namespace="/")
 @cross_origin()
 def placeStopLimitOrder(symbol, quantity, stop_price, limit_price):
+    """
+    Places a stop-limit order and broadcasts status.
+    Emits stop order status to connected clients.
+    """
     print(symbol, quantity)
     ret = connect.placeStopLimitOrder(
         symbol, quantity, stop_price, limit_price)
@@ -114,6 +152,10 @@ def placeStopLimitOrder(symbol, quantity, stop_price, limit_price):
 @socketio.on('placeStopMarketOrder', namespace="/")
 @cross_origin()
 def placeStopMarketOrder(symbol, quantity, stop_price):
+    """
+    Places a stop-market order and broadcasts status.
+    Emits stop order status to connected clients.
+    """
     print(symbol, quantity)
     ret = connect.placeStopMarketOrder(
         symbol, quantity, stop_price)
@@ -124,6 +166,10 @@ def placeStopMarketOrder(symbol, quantity, stop_price):
 @socketio.on('getPositions', namespace="/")
 @cross_origin()
 def getPositions():
+    """
+    Retrieves and broadcasts current positions.
+    Emits position data to connected clients.
+    """
     print("pos")
     ret = connect.getPositions()
     socketio.emit("positions", ret)
@@ -133,6 +179,10 @@ def getPositions():
 @socketio.on('getOrdersForStop', namespace="/")
 @cross_origin()
 def getOrdersForStop(symbol):
+    """
+    Retrieves and broadcasts stop orders for a symbol.
+    Emits stop order data to connected clients.
+    """
     print("orders")
     ret = connect.getOrdersForStop(symbol)
     socketio.emit("stopOrders", ret)
@@ -142,6 +192,10 @@ def getOrdersForStop(symbol):
 @socketio.on('cancelOrdersFromId', namespace="/")
 @cross_origin()
 def cancelOrdersFromId(symbol):
+    """
+    Cancels orders for a symbol and broadcasts status.
+    Emits cancellation status to connected clients.
+    """
     print("orders")
     ret = connect.cancelOrdersFromId(symbol)
     socketio.emit("status", ret)
@@ -151,6 +205,10 @@ def cancelOrdersFromId(symbol):
 @socketio.on('getOrders', namespace="/")
 @cross_origin()
 def getOrders():
+    """
+    Retrieves and broadcasts all orders.
+    Emits order data to connected clients.
+    """
     print("orders")
     ret = connect.getOrders()
     socketio.emit("allOrders", ret)
@@ -160,6 +218,10 @@ def getOrders():
 @socketio.on('getLastOrderStatus', namespace="/")
 @cross_origin()
 def getOrdersOnce():
+    """
+    Retrieves and broadcasts last order status.
+    Emits last order status to connected clients.
+    """
     ret = connect.getLastOrderStatus()
     print("Last Order Status: ", ret)
     socketio.emit("lastOrderStatus", ret)
@@ -169,6 +231,10 @@ def getOrdersOnce():
 @socketio.on('cancelOrders', namespace="/")
 @cross_origin()
 def cancelOrders(id):
+    """
+    Cancels a specific order and broadcasts status.
+    Emits cancellation status to connected clients.
+    """
     print(id)
     ret = connect.cancelOrders(str(id))
     print(ret)
@@ -179,6 +245,10 @@ def cancelOrders(id):
 @socketio.on('cancelAllOrders', namespace="/")
 @cross_origin()
 def cancelAllOrders():
+    """
+    Cancels all orders and broadcasts status.
+    Emits cancellation status to connected clients.
+    """
     ret = connect.cancelAllOrders()
     socketio.emit("cancelAllOrdersStatus", ret)
     return ""
@@ -187,6 +257,10 @@ def cancelAllOrders():
 @socketio.on('getAccountInfo', namespace="/")
 @cross_origin()
 def getAccountInfo():
+    """
+    Retrieves and broadcasts account information.
+    Emits account data to connected clients.
+    """
     ret = connect.getAccountInfo()
     socketio.emit("accountInfo", ret)
     return ""

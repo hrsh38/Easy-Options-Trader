@@ -1,3 +1,8 @@
+"""
+Main module for TD Ameritrade API integration and options trading functionality.
+Handles authentication, order placement, and account management.
+"""
+
 from distutils.log import error
 import requests
 from tda import auth, client
@@ -12,6 +17,7 @@ from tda.orders.equities import *
 from tda.client import Client
 from tda.orders.generic import OrderBuilder
 
+# Initialize TD Ameritrade client with authentication
 try:
     c = auth.client_from_token_file(config.token_path, config.api_key)
 except FileNotFoundError:
@@ -19,7 +25,6 @@ except FileNotFoundError:
     with webdriver.Chrome(executable_path='/Users/harsh/Desktop/TradeAssist/chromedriver') as driver:
         c = auth.client_from_login_flow(
             driver, config.api_key, config.redirect_uri, config.token_path)
-
         c.get_order()
 
 # r = c.get_price_history('AAPL',
@@ -37,6 +42,10 @@ except FileNotFoundError:
 
 
 def getOptionPrice(symbol, date, type, strike):
+    """
+    Retrieves current price data for a specific option contract.
+    Returns mark price, high price, and low price.
+    """
     # print(symbol,date, type, strike)
     year = str(datetime.date.today().year)
 
@@ -63,6 +72,10 @@ def getOptionPrice(symbol, date, type, strike):
 
 
 def getOptionData(symbol, date, type, strike):
+    """
+    Retrieves detailed option contract data including Greeks and volatility.
+    Returns comprehensive option contract information.
+    """
     print(symbol, date, type, strike)
     year = str(datetime.date.today().year)
 
@@ -94,6 +107,10 @@ def getOptionData(symbol, date, type, strike):
 
 
 def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_price):
+    """
+    Places a limit order to buy options contracts.
+    Handles both calls and puts with specified strike price and expiration.
+    """
     if (symbol == "$SPX.X"):
         symbol = "SPXW"
     try:
@@ -120,6 +137,10 @@ def placeOptionsOrder(symbol, date_month, date_day, type, strike, quantity, ask_
 
 
 def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity):
+    """
+    Places a market order to buy options contracts.
+    Executes immediately at the best available price.
+    """
     if (symbol == "$SPX.X"):
         symbol = "SPXW"
     try:
@@ -143,6 +164,10 @@ def placeOptionsOrderMarket(symbol, date_month, date_day, type, strike, quantity
 
 
 def getOrders():
+    """
+    Retrieves recent orders from the account.
+    Returns orders from the last 5 days.
+    """
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
     orders = c.get_orders_by_path(config.account_id,
                                   max_results=10,
@@ -157,6 +182,10 @@ def getOrders():
 
 
 def getLastOrderStatus():
+    """
+    Gets the status of the most recent order.
+    Returns the status of the last placed order.
+    """
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
     orders = c.get_orders_by_path(config.account_id,
                                   max_results=3,
@@ -172,6 +201,10 @@ def getLastOrderStatus():
 
 
 def cancelOrders(id):
+    """
+    Cancels a specific order by its ID.
+    Returns the cancellation response.
+    """
     res = c.cancel_order(id, config.account_id)
     # print(res)
     return res
@@ -180,6 +213,10 @@ def cancelOrders(id):
 
 
 def cancelAllOrders():
+    """
+    Cancels all working orders in the account.
+    Returns list of cancellation responses.
+    """
     orders = c.get_orders_by_query(status=Client.Order.Status.WORKING).json()
     try:
         response = nested_lookup('orderId', orders)
@@ -196,6 +233,10 @@ def cancelAllOrders():
 
 
 def getPositions():
+    """
+    Retrieves all current positions in the account.
+    Returns detailed position information.
+    """
     positions = json.dumps(c.get_accounts(
         fields=[Client.Account.Fields.POSITIONS]).json(), indent=8, sort_keys=True)
     # print(positions)
@@ -205,6 +246,10 @@ def getPositions():
 
 
 def sellToClosePosition(symbol, quantity, askPrice):
+    """
+    Places a limit order to sell/close an existing options position.
+    Returns the order response.
+    """
     print(symbol)
     # print(option_sell_to_close_limit(
     # symbol, int(quantity), float(askPrice)).build())
@@ -218,6 +263,10 @@ def sellToClosePosition(symbol, quantity, askPrice):
 
 
 def sellMarketPosition(symbol, quantity):
+    """
+    Places a market order to sell/close an existing options position.
+    Executes immediately at the best available price.
+    """
     print(symbol, quantity)
     close = c.place_order(
         config.account_id, option_sell_to_close_market(symbol, int(quantity)))
@@ -227,6 +276,10 @@ def sellMarketPosition(symbol, quantity):
 
 
 def getAccountInfo():
+    """
+    Retrieves account information including balances and positions.
+    Returns comprehensive account details.
+    """
     accountInfo = c.get_accounts().json()
     # print(accountInfo)
     return accountInfo
@@ -235,6 +288,10 @@ def getAccountInfo():
 
 
 def placeStopLimitOrder(symbol, quantity, stop_price, limit_price):
+    """
+    Places a stop-limit order to sell options at a specific price.
+    Triggers when price hits stop_price, executes at limit_price.
+    """
     try:
         h = option_sell_to_close_limit(symbol, int(quantity), limit_price).set_order_type(
             OrderType.STOP_LIMIT).clear_price().set_stop_price(stop_price).set_price(limit_price)
@@ -247,6 +304,10 @@ def placeStopLimitOrder(symbol, quantity, stop_price, limit_price):
 
 
 def placeStopMarketOrder(symbol, quantity, stop_price):
+    """
+    Places a stop-market order to sell options at a specific price.
+    Triggers when price hits stop_price, executes at market.
+    """
     try:
         h = option_sell_to_close_limit(symbol, int(quantity), stop_price).set_order_type(
             OrderType.STOP).clear_price().set_stop_price(stop_price)
@@ -259,6 +320,10 @@ def placeStopMarketOrder(symbol, quantity, stop_price):
 
 
 def placeTrailingStopLimit(symbol, quantity, stop_price):
+    """
+    Places a trailing stop-limit order that follows the price.
+    Adjusts stop price as the option price moves favorably.
+    """
     try:
         print("hi")
     except error:
@@ -268,6 +333,10 @@ def placeTrailingStopLimit(symbol, quantity, stop_price):
 # placeStopMarketOrder("SPXW_052423C4150", 1, 0.05)
 
 def getOrdersForStop(symbol):
+    """
+    Retrieves all stop orders for a specific symbol.
+    Returns list of active stop orders.
+    """
     print(symbol)
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
     orders = c.get_orders_by_path(config.account_id,
@@ -289,6 +358,10 @@ def getOrdersForStop(symbol):
 # getOrdersForStop("AMZN_052623C118")
 
 def cancelOrdersFromId(symbol):
+    """
+    Cancels all orders for a specific symbol.
+    Returns cancellation status.
+    """
     print(symbol)
     # start_date = datetime.datetime.now() - datetime.timedelta(10)
     orders = c.get_orders_by_path(config.account_id,
